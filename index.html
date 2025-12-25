@@ -53,6 +53,13 @@ section h2 { text-align:center; font-size:2.6rem; margin-bottom:25px; color:#4a9
 .gallery-item img { width:100%; max-height:70vh; border-radius:12px; object-fit:contain; }
 .card p { margin-top:12px; font-size:1rem; color:#555; line-height:1.6; }
 
+/* MODALS */
+.modal { position:fixed; inset:0; background:rgba(0,0,0,0.85); display:none; justify-content:center; align-items:center; z-index:999; padding:20px; }
+.modal-content { background:white; padding:25px; max-width:90%; max-height:90%; border-radius:18px; text-align:center; overflow:auto; box-shadow:0 15px 35px rgba(0,0,0,0.25); animation: fadeIn 0.4s ease; }
+.modal img { max-width:100%; max-height:70vh; border-radius:12px; object-fit:contain; }
+@keyframes fadeIn { from {opacity:0; transform:scale(0.95);} to{opacity:1; transform:scale(1);} }
+.close { margin-top:20px; cursor:pointer; color:#4a90e2; font-weight:500; }
+
 /* FORM */
 form { max-width:650px; margin:auto; display:flex; flex-direction:column; gap:18px; }
 input, textarea { padding:16px; border-radius:10px; border:1px solid #ccc; font-size:1rem; }
@@ -149,39 +156,22 @@ body.dark header p { color:#c0c0c0; }
 
 <div class="divider"></div>
 
-<!-- REVIEWS SECTION -->
-<section id="reviews">
-  <h2>Reviews</h2>
-
-  <div class="games">
-    <div class="card">
-      <p>"I like this game so far! 10/10"</p>
-      <strong>- Test</strong>
-    </div>
-
-    <div class="card">
-      <p>"Really fun concept and great ideas."</p>
-      <strong>- Test</strong>
-    </div>
-
-    <div class="card">
-      <p>"Excited to see where this goes!"</p>
-      <strong>- Test</strong>
-    </div>
-  </div>
-
-  <div style="text-align:center; margin-top:40px;">
-    <a href="reviews.html"><button>All Reviews</button></a>
-  </div>
-</section>
-
-<div class="divider"></div>
-
 <section id="contact">
   <h2>Contact</h2>
   <p style="text-align:center;">
     <a href="mailto:thedr3am.studi0s@gmail.com">thedr3am.studi0s@gmail.com</a>
   </p>
+</section>
+
+<div class="divider"></div>
+
+<!-- NEW COMMUNITY IDEAS SECTION -->
+<section id="community-ideas">
+  <h2>Community Ideas</h2>
+  <p style="text-align:center; margin-bottom:20px; color:#555;">
+    Ideas shared by the DR3AM STUDI0S community.
+  </p>
+  <div class="games" id="communityIdeas"></div>
 </section>
 
 </main>
@@ -218,14 +208,11 @@ window.addEventListener('load', ()=>{
 });
 
 // DARK MODE
-const darkToggle = document.getElementById("darkToggle");
-if(darkToggle){
-  darkToggle.onclick = () => {
-    document.body.classList.toggle("dark");
-    localStorage.dark = document.body.classList.contains("dark")?"1":"0";
-  };
-}
 if(localStorage.dark==="1") document.body.classList.add("dark");
+darkToggle.onclick = () => {
+  document.body.classList.toggle("dark");
+  localStorage.dark = document.body.classList.contains("dark")?"1":"0";
+};
 
 // SECTION REVEAL
 const observer = new IntersectionObserver(entries=>{
