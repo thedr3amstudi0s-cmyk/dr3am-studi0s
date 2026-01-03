@@ -124,9 +124,14 @@ body.dark header p { color:#c0c0c0; }
   <h2>Our Games</h2>
   <p style="text-align:center; margin-bottom:20px; color:#555;">Click a game card to learn more.</p>
   <div class="games">
-    <div class="card" onclick="openGame()">
+    <div class="card" onclick="openGame('experiment')">
       The Experiment
       <p>A zombie survival game set in a mall where players must escape or find a cure while avoiding threats.</p>
+    </div>
+
+    <div class="card" onclick="openGame('firework')">
+      Firework Simulator
+      <p>Try to have the most money and rebirths while launching beautiful fireworks!</p>
     </div>
   </div>
 </section>
@@ -165,7 +170,6 @@ body.dark header p { color:#c0c0c0; }
 
 <div class="divider"></div>
 
-<!-- NEW COMMUNITY IDEAS SECTION -->
 <section id="community-ideas">
   <h2>Community Ideas</h2>
   <p style="text-align:center; margin-bottom:20px; color:#555;">
@@ -191,8 +195,9 @@ body.dark header p { color:#c0c0c0; }
 <!-- GAME MODAL -->
 <div class="modal" id="gameModal">
   <div class="modal-content">
-    <h2>The Experiment</h2>
-    <p>A zombie survival game set in a mall where you go around trying to escape or find a cure by solving different puzzles and finding different clues.</p>
+    <h2 id="gameModalTitle"></h2>
+    <p id="gameModalDesc"></p>
+    <div id="gameModalLink" style="margin-top:10px;"></div>
     <div class="close" onclick="closeGame()">Close</div>
   </div>
 </div>
@@ -225,7 +230,6 @@ document.querySelectorAll("section").forEach(sec=>observer.observe(sec));
 // MODALS
 const imageModal = document.getElementById("imageModal");
 const modalImg = document.getElementById("modalImg");
-const gameModal = document.getElementById("gameModal");
 
 function openImage(src){
   imageModal.style.display = "flex";
@@ -237,8 +241,28 @@ imageModal.addEventListener("click", e=>{
   }
 });
 
-function openGame(){ gameModal.style.display="flex"; }
-function closeGame(){ gameModal.style.display="none"; }
+function openGame(game) {
+  const modal = document.getElementById("gameModal");
+  const title = document.getElementById("gameModalTitle");
+  const desc = document.getElementById("gameModalDesc");
+  const linkDiv = document.getElementById("gameModalLink");
+
+  if (game === 'experiment') {
+    title.textContent = "The Experiment";
+    desc.textContent = "A zombie survival game set in a mall where you go around trying to escape or find a cure by solving different puzzles and finding different clues.";
+    linkDiv.innerHTML = "";
+  } else if (game === 'firework') {
+    title.textContent = "Firework Simulator";
+    desc.textContent = "Try to have the most money and rebirths while launching beautiful fireworks!";
+    linkDiv.innerHTML = `<a href="https://thedr3amstudi0s-cmyk.github.io/FireworkSimulator/index.html" target="_blank" style="color:#4a90e2; text-decoration:underline;">Click To Play</a>`;
+  }
+
+  modal.style.display = "flex";
+}
+
+function closeGame() {
+  document.getElementById("gameModal").style.display = "none";
+}
 
 // COMMUNITY IDEAS SCRIPT
 const communityIdeas = [
