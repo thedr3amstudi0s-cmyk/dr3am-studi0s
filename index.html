@@ -125,7 +125,7 @@ body.dark header p { color:#c0c0c0; }
   <p style="text-align:center; margin-bottom:20px; color:#555;">Click a game card to learn more.</p>
   <div class="games">
     <div class="card" onclick="openGame('experiment')">
-      The Experiment
+      The Experiment (not released yet)
       <p>A zombie survival game set in a mall where players must escape or find a cure while avoiding threats.</p>
     </div>
 
@@ -248,7 +248,7 @@ function openGame(game) {
   const linkDiv = document.getElementById("gameModalLink");
 
   if (game === 'experiment') {
-    title.textContent = "The Experiment";
+    title.textContent = "The Experiment (not released yet)";
     desc.textContent = "A zombie survival game set in a mall where you go around trying to escape or find a cure by solving different puzzles and finding different clues.";
     linkDiv.innerHTML = "";
   } else if (game === 'firework') {
@@ -285,4 +285,5 @@ if (ideasContainer) {
 
 </body>
 </html>
+
 
