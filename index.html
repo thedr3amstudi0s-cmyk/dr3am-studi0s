@@ -9,6 +9,38 @@
 * { margin:0; padding:0; box-sizing:border-box; scroll-behavior:smooth; }
 body { font-family:'Roboto', Arial, sans-serif; line-height:1.8; transition:0.4s; background: linear-gradient(to bottom, #d0e7ff, #ffffff, #d0e7ff); color:#222; }
 
+/* TOP DONO / TWITCH BAR */
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10000;
+  background: linear-gradient(90deg, #9146FF, #4a90e2);
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+.top-bar a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 15px;
+}
+
+.top-bar a:hover {
+  text-decoration: underline;
+}
+
+.dono-btn {
+  background: rgba(255,255,255,0.2);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
 /* LOADER */
 #loader { position:fixed; inset:0; background:#4a90e2; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; opacity:1; transition:opacity 0.7s; }
 #loader .logo-svg { width:150px; height:80px; margin:0 auto 15px; display:block; }
@@ -75,12 +107,31 @@ body.dark { background: linear-gradient(to bottom,#00111f,#0a0a0a,#00111f); colo
 body.dark .card, body.dark .gallery-item, body.dark .modal-content { background:#1b1b1b; }
 body.dark section h2 { color:#7ab6ff; }
 body.dark header p { color:#c0c0c0; }
+body.dark .top-bar { background: linear-gradient(90deg, #5e2bbf, #1b3a5f); }
 
 /* RESPONSIVE */
 @media(max-width:800px){.games,.gallery{flex-direction:column;align-items:center}}
 </style>
 </head>
 <body>
+
+<!-- TOP DONATION / TWITCH BAR -->
+<div class="top-bar">
+  <div>
+    🎮 <strong>Sponser of: officer_waffle, go check him out, Twitch:</strong>
+    <a href="https://twitch.tv/officer_waffle" target="_blank">
+      twitch.tv/officer_waffle
+    </a>
+    <span style="opacity:0.85; margin-left:10px;">
+      | 
+    </span>
+  </div>
+  <div>
+    <a href="https://cash.app/$doctorwaffle500" target="_blank" class="dono-btn">
+      ❤️ All Donations Go To Dreamcrusher
+    </a>
+  </div>
+</div>
 
 <!-- LOADER -->
 <div id="loader">
@@ -99,26 +150,17 @@ body.dark header p { color:#c0c0c0; }
   <h1>DR3AM STUDI0S</h1>
   <p>Fun, imaginative, high-quality indie games for all players.</p>
   <nav>
-    <a href="#about">About</a>
     <a href="#games">Games</a>
     <a href="#gallery">Gallery</a>
     <a href="#ideas">Ideas</a>
     <a href="#contact">Contact</a>
+    <a href="#community-ideas">Community Ideas/Comments</a>
+    <a href="#about">About</a>
   </nav>
   <button id="darkToggle">Toggle Dark Mode</button>
 </header>
 
 <main>
-
-<section id="about">
-  <h2>About Us</h2>
-  <p class="about-text">
-    Dr3am Studi0s is a solo game studio focused on creating fun, imaginative, and high-quality game experiences.
-    This website showcases games currently in development, completed projects, and collects ideas and feedback from the community.
-  </p>
-</section>
-
-<div class="divider"></div>
 
 <section id="games">
   <h2>Our Games</h2>
@@ -176,6 +218,21 @@ body.dark header p { color:#c0c0c0; }
     Ideas shared by the DR3AM STUDI0S community.
   </p>
   <div class="games" id="communityIdeas"></div>
+</section>
+
+<div class="divider"></div>
+
+<section id="about">
+  <h2>About Us</h2>
+  <p class="about-text">
+DR3AM STUDI0S is the passion project of Dreamcrusher, a solo game developer who loves creating fun, competitive games and challenging puzzles. With a focus on exciting gameplay experiences, the studio’s mission is to make games that are engaging, memorable, and just plain fun to play.
+
+So far, DR3AM STUDI0S has released one game, and there’s an exciting project on the horizon: The Experiment. This upcoming game is a competitive puzzle-adventure that pushes players to think strategically while testing their reflexes, and it’s shaping up to be the next big thing for the studio.
+
+Every game is designed with care, creativity, and a focus on the player experience. By supporting DR3AM STUDI0S, whether through feedback, donations, or simply following the studio’s journey, you’re helping make these games even better. Donations, in particular, help Dreamcrusher find collaborators, improve development speed, and bring ambitious game ideas to life faster than ever.
+
+Even though the community aspect is just starting to grow, every player and supporter is a part of the journey. DR3AM STUDI0S is more than just games — it’s about creating a space where fun, creativity, and competition come together. Whether you’re playing the current release, keeping an eye on The Experiment, or just exploring the studio’s world, there’s always something new to enjoy.
+  </p>
 </section>
 
 </main>
@@ -266,7 +323,7 @@ function closeGame() {
 
 // COMMUNITY IDEAS SCRIPT
 const communityIdeas = [
-  { username: "User", idea: "" },
+  { username: "Libbylobster", idea: "I am a big fan of this website, I got way into the firework simulator game and I'm excited to try the zombie game when it drops! Keep making cool games :)" },
   { username: "User", idea: "" },
   { username: "User", idea: "" }
 ];
@@ -285,5 +342,3 @@ if (ideasContainer) {
 
 </body>
 </html>
-
-
