@@ -6,7 +6,7 @@
 <title>DR3AM STUDI0S</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-* { margin:0; padding:0; box-sizing:border-box; scroll-behavior:smooth; }
+{ margin:0; padding:0; box-sizing:border-box; scroll-behavior:smooth; }
 body { font-family:'Roboto', Arial, sans-serif; line-height:1.8; transition:0.4s; background: linear-gradient(to bottom, #d0e7ff, #ffffff, #d0e7ff); color:#222; }
 
 /* TOP DONO / TWITCH BAR */
@@ -175,6 +175,11 @@ body.dark .top-bar { background: linear-gradient(90deg, #5e2bbf, #1b3a5f); }
       Firework Simulator (massive update)
       <p>Try to have the most money and rebirths while launching beautiful fireworks!</p>
     </div>
+    
+    <div class="card" onclick="openGame('habit')">
+      Habit Tracker
+      <p>Track your good habits to get a dayly streak amd you can make new good habits</p>
+    </div>
   </div>
 </section>
 
@@ -312,7 +317,10 @@ function openGame(game) {
     title.textContent = "Firework Simulator (beta)";
     desc.textContent = "Try to have the most money and rebirths while launching beautiful fireworks!";
     linkDiv.innerHTML = `<a href="https://thedr3amstudi0s-cmyk.github.io/FireworkSimulator/index.html" target="_blank" style="color:#4a90e2; text-decoration:underline;">Click To Play</a>`;
-  }
+  } else if (game === 'habit') {
+    title.textContent = "Habit Tracker";
+    desc.textContent = "Track your good habits to get a dayly streak amd you can make new good habits";
+    linkDiv.innerHTML = `<a href="https://thedr3amstudi0s-cmyk.github.io/Habit-Tracker/" target="_blank" style="color:#4a90e2; text-decoration:underline;">Click To Play</a>`;
 
   modal.style.display = "flex";
 }
