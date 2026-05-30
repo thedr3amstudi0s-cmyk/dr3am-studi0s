@@ -5,60 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DR3AM STUDI0S</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
 <style>
-{ margin:0; padding:0; box-sizing:border-box; scroll-behavior:smooth; }
+*{ margin:0; padding:0; box-sizing:border-box; scroll-behavior:smooth; }
 body { font-family:'Roboto', Arial, sans-serif; line-height:1.8; transition:0.4s; background: linear-gradient(to bottom, #d0e7ff, #ffffff, #d0e7ff); color:#222; }
 
-/* TOP DONO / TWITCH BAR */
+/* TOP BAR */
 .top-bar {
-  position: sticky;
-  top: 0;
-  z-index: 10000;
+  position: sticky; top: 0; z-index: 10000;
   background: linear-gradient(90deg, #9146FF, #4a90e2);
-  color: white;
-  padding: 10px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  color: white; padding: 10px 20px;
+  display: flex; justify-content: space-between; align-items: center;
   font-size: 0.95rem;
 }
-
-.top-bar a {
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-  margin-left: 15px;
-}
-
-.top-bar a:hover {
-  text-decoration: underline;
-}
-
-.dono-btn {
-  background: rgba(255,255,255,0.2);
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-weight: 600;
-}
+.top-bar a { color: white; text-decoration: none; font-weight: 500; margin-left: 15px; }
+.top-bar a:hover { text-decoration: underline; }
+.dono-btn { background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; font-weight: 600; }
 
 /* LOADER */
 #loader { position:fixed; inset:0; background:#4a90e2; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; opacity:1; transition:opacity 0.7s; }
 #loader .logo-svg { width:150px; height:80px; margin:0 auto 15px; display:block; }
-#loader .logo-svg path { stroke-dasharray: 400; stroke-dashoffset: 400; animation: drawPath 2s forwards; stroke:#fff; stroke-width:5; fill:transparent; stroke-linecap:round; transition:0.3s; }
+#loader .logo-svg path { stroke-dasharray:400; stroke-dashoffset:400; animation:drawPath 2s forwards; stroke:#fff; stroke-width:5; fill:transparent; stroke-linecap:round; }
 #loader .loader-text { color:white; font-size:1.3rem; letter-spacing:1px; margin-top:20px; }
-
 @keyframes drawPath { to { stroke-dashoffset:0; } }
 
 /* HEADER */
 header { position:relative; text-align:center; padding:80px 20px; box-shadow:0 0 25px rgba(0,0,0,0.15); }
-header::before { content:""; position:absolute; inset:0; background:radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%); pointer-events:none; }
-
-/* DS LOGO */
 .logo-svg { width:150px; height:80px; margin:0 auto 15px; display:block; }
-.logo-svg path { stroke-dasharray: 400; stroke-dashoffset: 400; animation: drawPath 2.5s forwards; stroke:#4a90e2; stroke-width:5; fill:transparent; stroke-linecap:round; transition:0.3s; }
+.logo-svg path { stroke-dasharray:400; stroke-dashoffset:400; animation:drawPath 2.5s forwards; stroke:#4a90e2; stroke-width:5; fill:transparent; stroke-linecap:round; }
 .logo-svg:hover path { stroke-width:6; }
-
-/* NAV & BUTTONS */
 header nav { margin-top:15px; }
 nav a { color:#4a90e2; margin:0 15px; font-weight:500; text-decoration:none; }
 nav a:hover { text-decoration:underline; }
@@ -73,12 +53,12 @@ section.show { opacity:1; transform:translateY(0); }
 section h2 { text-align:center; font-size:2.6rem; margin-bottom:25px; color:#4a90e2; }
 
 /* ABOUT */
-.about-text { max-width:900px; margin:auto; text-align:center; font-size:1.15rem; line-height:2; color:#255; }
+.about-text { max-width:900px; margin:auto; text-align:center; font-size:1.15rem; line-height:2; }
 
 /* DIVIDER */
 .divider { width:80%; max-width:800px; height:1px; margin:100px auto; background:linear-gradient(to right,transparent,rgba(0,0,0,0.2),transparent); }
 
-/* CARDS / GALLERY */
+/* CARDS */
 .games, .gallery { display:flex; flex-wrap:wrap; justify-content:center; gap:40px; }
 .card, .gallery-item { background:white; width:320px; padding:30px; border-radius:18px; text-align:center; box-shadow:0 15px 35px rgba(0,0,0,0.15); cursor:pointer; transition:0.3s; }
 .card:hover, .gallery-item:hover { transform:translateY(-12px); box-shadow:0 20px 40px rgba(0,0,0,0.25); }
@@ -87,16 +67,68 @@ section h2 { text-align:center; font-size:2.6rem; margin-bottom:25px; color:#4a9
 
 /* MODALS */
 .modal { position:fixed; inset:0; background:rgba(0,0,0,0.85); display:none; justify-content:center; align-items:center; z-index:999; padding:20px; }
-.modal-content { background:white; padding:25px; max-width:90%; max-height:90%; border-radius:18px; text-align:center; overflow:auto; box-shadow:0 15px 35px rgba(0,0,0,0.25); animation: fadeIn 0.4s ease; }
+.modal-content { background:white; padding:25px; max-width:90%; max-height:90%; border-radius:18px; text-align:center; overflow:auto; box-shadow:0 15px 35px rgba(0,0,0,0.25); animation:fadeIn 0.4s ease; }
 .modal img { max-width:100%; max-height:70vh; border-radius:12px; object-fit:contain; }
-@keyframes fadeIn { from {opacity:0; transform:scale(0.95);} to{opacity:1; transform:scale(1);} }
+@keyframes fadeIn { from{opacity:0;transform:scale(0.95);}to{opacity:1;transform:scale(1);} }
 .close { margin-top:20px; cursor:pointer; color:#4a90e2; font-weight:500; }
 
 /* FORM */
 form { max-width:650px; margin:auto; display:flex; flex-direction:column; gap:18px; }
-input, textarea { padding:16px; border-radius:10px; border:1px solid #ccc; font-size:1rem; }
+input[type="text"], input[type="email"], textarea {
+  padding:16px; border-radius:10px; border:1px solid #ccc; font-size:1rem; font-family:inherit;
+}
 button { padding:16px; background:#4a90e2; color:white; border:none; border-radius:10px; cursor:pointer; font-weight:500; font-size:1rem; }
 button:hover { background:#357ABD; }
+
+/* AUTH PANEL */
+#authPanel {
+  max-width:440px; margin:0 auto 40px; padding:30px;
+  background:white; border-radius:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+.auth-tabs { display:flex; gap:10px; justify-content:center; margin-bottom:20px; }
+.auth-tab {
+  padding:8px 22px; border-radius:20px; border:2px solid #4a90e2;
+  cursor:pointer; font-weight:500; font-size:0.95rem; transition:0.2s;
+}
+.auth-tab.active { background:#4a90e2; color:white; }
+.auth-tab:not(.active) { background:transparent; color:#4a90e2; }
+.auth-input {
+  width:100%; padding:14px; border-radius:10px; border:1px solid #ccc;
+  font-size:1rem; margin-bottom:12px; box-sizing:border-box; font-family:inherit;
+}
+.auth-input:focus { outline:none; border-color:#4a90e2; }
+#authError { color:#e74c3c; font-size:0.9rem; margin-bottom:10px; text-align:center; min-height:20px; }
+.auth-submit {
+  width:100%; padding:14px; background:#4a90e2; color:white;
+  border:none; border-radius:10px; font-size:1rem; font-weight:500; cursor:pointer;
+}
+.auth-submit:hover { background:#357ABD; }
+
+/* NEWSLETTER TOGGLE */
+.newsletter-row {
+  display:flex; align-items:center; justify-content:space-between;
+  background:#f0f6ff; padding:14px 18px; border-radius:12px;
+  margin:20px 0; border:1px solid #d0e4ff;
+}
+.toggle-switch { position:relative; display:inline-block; width:50px; height:26px; cursor:pointer; }
+.toggle-switch input { opacity:0; width:0; height:0; }
+.toggle-slider {
+  position:absolute; inset:0; border-radius:26px;
+  background:#ccc; transition:0.3s;
+}
+.toggle-dot {
+  position:absolute; top:3px; left:3px;
+  width:20px; height:20px; border-radius:50%;
+  background:white; transition:0.3s; pointer-events:none;
+}
+#newsletterStatus { font-size:0.85rem; color:#4a90e2; min-height:20px; text-align:center; }
+.signout-btn {
+  padding:10px 24px; border-radius:20px; border:2px solid #e74c3c;
+  background:transparent; color:#e74c3c; cursor:pointer; font-weight:500;
+  font-size:0.95rem; margin-top:10px;
+}
+.signout-btn:hover { background:#e74c3c; color:white; }
 
 /* FOOTER */
 footer { background:#1f1f1f; color:white; }
@@ -104,32 +136,29 @@ footer { background:#1f1f1f; color:white; }
 
 /* DARK MODE */
 body.dark { background: linear-gradient(to bottom,#00111f,#0a0a0a,#00111f); color:#e0e0e0; }
-body.dark .card, body.dark .gallery-item, body.dark .modal-content { background:#1b1b1b; }
+body.dark .card, body.dark .gallery-item, body.dark .modal-content, body.dark #authPanel { background:#1b1b1b; }
+body.dark .card p { color:#aaa; }
 body.dark section h2 { color:#7ab6ff; }
 body.dark header p { color:#c0c0c0; }
-body.dark .top-bar { background: linear-gradient(90deg, #5e2bbf, #1b3a5f); }
+body.dark .top-bar { background: linear-gradient(90deg,#5e2bbf,#1b3a5f); }
+body.dark .auth-input { background:#2a2a2a; border-color:#444; color:#e0e0e0; }
+body.dark .newsletter-row { background:#1a2a3a; border-color:#2a4a6a; }
+body.dark .auth-tab:not(.active) { color:#7ab6ff; border-color:#7ab6ff; }
 
 /* RESPONSIVE */
-@media(max-width:800px){.games,.gallery{flex-direction:column;align-items:center}}
+@media(max-width:800px){ .games,.gallery{flex-direction:column;align-items:center} }
 </style>
 </head>
 <body>
 
-<!-- TOP DONATION / TWITCH BAR -->
+<!-- TOP BAR -->
 <div class="top-bar">
   <div>
-    🎮 <strong>Official sponsor of: officer_waffle, go check him out, Twitch:</strong>
-    <a href="https://twitch.tv/officer_waffle" target="_blank">
-      twitch.tv/officer_waffle
-    </a>
-    <span style="opacity:0.85; margin-left:10px;">
-      | 
-    </span>
+    🎮 <strong>Official sponsor of: officer_waffle</strong>
+    <a href="https://twitch.tv/officer_waffle" target="_blank">twitch.tv/officer_waffle</a>
   </div>
   <div>
-    <a href="https://cash.app/$doctorwaffle500" target="_blank" class="dono-btn">
-      ❤️ All Donations Go To Dreamcrusher
-    </a>
+    <a href="https://cash.app/$doctorwaffle500" target="_blank" class="dono-btn">❤️ Donate to Dreamcrusher</a>
   </div>
 </div>
 
@@ -148,13 +177,14 @@ body.dark .top-bar { background: linear-gradient(90deg, #5e2bbf, #1b3a5f); }
     <path d="M80 70 C120 70, 120 40, 80 40 C40 40, 40 10, 80 10" />
   </svg>
   <h1>DR3AM STUDI0S</h1>
-  <p>Fun, imaginative, high-quality indie games for all players. (Owned by dreamcrusher) Go check out SpaceBoundCowboys.store, sbc is an amazing community, GO SBC</p>
+  <p>Fun, imaginative, high-quality indie games for all players. (Owned by dreamcrusher) Go check out SpaceBoundCowboys.store — GO SBC!</p>
   <nav>
+    <a href="#account">Account</a>
     <a href="#games">Games</a>
     <a href="#gallery">Gallery</a>
     <a href="#ideas">Ideas</a>
     <a href="#contact">Contact</a>
-    <a href="#community-ideas">Community Ideas/Comments</a>
+    <a href="#community-ideas">Community</a>
     <a href="#about">About</a>
   </nav>
   <button id="darkToggle">Toggle Dark Mode</button>
@@ -162,84 +192,142 @@ body.dark .top-bar { background: linear-gradient(90deg, #5e2bbf, #1b3a5f); }
 
 <main>
 
+<!-- ACCOUNT SECTION -->
+<section id="account">
+  <h2>Your Account</h2>
+  <p style="text-align:center; margin-bottom:25px; color:#555;">Sign up to manage your newsletter subscription and stay up to date.</p>
+
+  <div id="authPanel">
+
+    <!-- NOT LOGGED IN -->
+    <div id="authForms">
+      <h3 id="authFormTitle" style="text-align:center; color:#4a90e2; margin-bottom:20px;">Create Account</h3>
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="btnSignup" onclick="switchForm('signup')">Sign Up</button>
+        <button class="auth-tab" id="btnLogin" onclick="switchForm('login')">Log In</button>
+      </div>
+
+      <input class="auth-input" id="authEmail" type="email" placeholder="Email address">
+      <input class="auth-input" id="authPassword" type="password" placeholder="Password (min 6 chars)">
+
+      <!-- Newsletter checkbox — signup only -->
+      <div id="newsletterSignupRow" style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+        <input type="checkbox" id="newsletterSignup" checked
+          style="width:18px; height:18px; cursor:pointer; accent-color:#4a90e2;">
+        <label for="newsletterSignup" style="cursor:pointer; color:#555; font-size:0.95rem;">
+          Subscribe to the DR3AM STUDI0S weekly newsletter
+        </label>
+      </div>
+
+      <div id="authError"></div>
+      <button class="auth-submit" id="authSubmitBtn" onclick="handleAuth()">Create Account</button>
+    </div>
+
+    <!-- LOGGED IN -->
+    <div id="accountPanel" style="display:none; text-align:center;">
+      <p style="font-size:1.05rem; color:#333; margin-bottom:6px;">
+        Welcome back, <strong id="userEmailDisplay" style="color:#4a90e2;"></strong>
+      </p>
+
+      <div class="newsletter-row">
+        <div style="text-align:left;">
+          <p style="font-weight:500; color:#333; margin:0 0 3px;">Weekly Newsletter</p>
+          <p style="font-size:0.85rem; color:#777; margin:0;">Game updates, new releases & dev notes</p>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="newsletterToggle" onchange="updateNewsletter(this.checked)">
+          <span class="toggle-slider" id="toggleSlider"></span>
+          <span class="toggle-dot" id="toggleDot"></span>
+        </label>
+      </div>
+
+      <p id="newsletterStatus"></p>
+      <button class="signout-btn" onclick="handleSignOut()">Sign Out</button>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- GAMES -->
 <section id="games">
   <h2>Our Games</h2>
   <p style="text-align:center; margin-bottom:20px; color:#555;">Click a game card to learn more.</p>
   <div class="games">
     <div class="card" onclick="openGame('experiment')">
-      The Experiment (not released yet)
+      <strong>The Experiment</strong> <em style="font-size:0.85rem;">(not released yet)</em>
       <p>A zombie survival game set in a mall where players must escape or find a cure while avoiding threats.</p>
     </div>
-
     <div class="card" onclick="openGame('firework')">
-      Firework Simulator (massive update)
+      <strong>Firework Simulator</strong> <em style="font-size:0.85rem;">(massive update)</em>
       <p>Try to have the most money and rebirths while launching beautiful fireworks!</p>
     </div>
-    
     <div class="card" onclick="openGame('habit')">
-      Habit Tracker
-      <p>Track your good habits to get a daily streak and you can make new good habits</p>
+      <strong>Habit Tracker</strong>
+      <p>Track your good habits to get a daily streak and build new positive routines.</p>
     </div>
   </div>
 </section>
 
 <div class="divider"></div>
 
+<!-- GALLERY -->
 <section id="gallery">
   <h2>Gallery</h2>
   <p style="text-align:center; margin-bottom:20px; color:#555;">Click images to view larger screenshots.</p>
   <div class="gallery">
-    <div class="gallery-item"><img src="images/game1.png" onclick="openImage(this.src)"></div>
-    <div class="gallery-item"><img src="images/game2.png" onclick="openImage(this.src)"></div>
-    <div class="gallery-item"><img src="images/game3.png" onclick="openImage(this.src)"></div>
-    <div class="gallery-item"><img src="images/game4.png" onclick="openImage(this.src)"></div>
-    <div class="gallery-item"><img src="images/game5.png" onclick="openImage(this.src)"></div>
+    <div class="gallery-item"><img src="images/game1.png" onclick="openImage(this.src)" alt="Game screenshot 1"></div>
+    <div class="gallery-item"><img src="images/game2.png" onclick="openImage(this.src)" alt="Game screenshot 2"></div>
+    <div class="gallery-item"><img src="images/game3.png" onclick="openImage(this.src)" alt="Game screenshot 3"></div>
+    <div class="gallery-item"><img src="images/game4.png" onclick="openImage(this.src)" alt="Game screenshot 4"></div>
+    <div class="gallery-item"><img src="images/game5.png" onclick="openImage(this.src)" alt="Game screenshot 5"></div>
   </div>
 </section>
 
 <div class="divider"></div>
 
+<!-- IDEAS -->
 <section id="ideas">
   <h2>Share Your Ideas</h2>
   <form action="https://formspree.io/f/mjgbedkv" method="POST">
-    <input name="name" placeholder="Your Name" required>
+    <input type="text" name="name" placeholder="Your Name" required>
     <input type="email" name="_replyto" placeholder="Your Email" required>
-    <textarea name="idea" placeholder="Your Idea" required></textarea>
-    <button>Send</button>
+    <textarea name="idea" placeholder="Your Idea" required style="padding:16px; border-radius:10px; border:1px solid #ccc; font-size:1rem; font-family:inherit; min-height:120px;"></textarea>
+    <button type="submit">Send</button>
   </form>
 </section>
 
 <div class="divider"></div>
 
+<!-- CONTACT -->
 <section id="contact">
   <h2>Contact</h2>
   <p style="text-align:center;">
-    <a href="mailto:thedr3am.studi0s@gmail.com">thedr3am.studi0s@gmail.com</a>
+    <a href="mailto:thedr3am.studi0s@gmail.com" style="color:#4a90e2;">thedr3am.studi0s@gmail.com</a>
   </p>
 </section>
 
 <div class="divider"></div>
 
+<!-- COMMUNITY IDEAS -->
 <section id="community-ideas">
-  <h2>Community Ideas/comments</h2>
-  <p style="text-align:center; margin-bottom:20px; color:#555;">
-    Ideas shared by the DR3AM STUDI0S community.
-  </p>
+  <h2>Community Ideas/Comments</h2>
+  <p style="text-align:center; margin-bottom:20px; color:#555;">Ideas shared by the DR3AM STUDI0S community.</p>
   <div class="games" id="communityIdeas"></div>
 </section>
 
 <div class="divider"></div>
 
+<!-- ABOUT -->
 <section id="about">
   <h2>About Us</h2>
   <p class="about-text">
-DR3AM STUDI0S is the passion project of Dreamcrusher, a solo game developer who loves creating fun, competitive games and challenging puzzles. With a focus on exciting gameplay experiences, the studio’s mission is to make games that are engaging, memorable, and just plain fun to play.
-
-So far, DR3AM STUDI0S has released one game, and there’s an exciting project on the horizon: The Experiment. This upcoming game is a competitive puzzle-adventure that pushes players to think strategically while testing their reflexes, and it’s shaping up to be the next big thing for the studio.
-
-Every game is designed with care, creativity, and a focus on the player experience. By supporting DR3AM STUDI0S, whether through feedback, donations, or simply following the studio’s journey, you’re helping make these games even better. Donations, in particular, help Dreamcrusher find collaborators, improve development speed, and bring ambitious game ideas to life faster than ever.
-
-Even though the community aspect is just starting to grow, every player and supporter is a part of the journey. DR3AM STUDI0S is more than just games — it’s about creating a space where fun, creativity, and competition come together. Whether you’re playing the current release, keeping an eye on The Experiment, or just exploring the studio’s world, there’s always something new to enjoy.
+    DR3AM STUDI0S is the passion project of Dreamcrusher, a solo game developer who loves creating fun, competitive games and challenging puzzles. With a focus on exciting gameplay experiences, the studio's mission is to make games that are engaging, memorable, and just plain fun to play.
+    <br><br>
+    So far, DR3AM STUDI0S has released one game, and there's an exciting project on the horizon: The Experiment — a competitive puzzle-adventure that pushes players to think strategically while testing their reflexes.
+    <br><br>
+    Every game is designed with care, creativity, and a focus on the player experience. By supporting DR3AM STUDI0S through feedback, donations, or simply following the studio's journey, you're helping make these games even better.
   </p>
 </section>
 
@@ -254,108 +342,237 @@ Even though the community aspect is just starting to grow, every player and supp
 
 <!-- IMAGE MODAL -->
 <div class="modal" id="imageModal">
-  <img id="modalImg">
+  <img id="modalImg" alt="Gallery image">
 </div>
 
 <!-- GAME MODAL -->
 <div class="modal" id="gameModal">
   <div class="modal-content">
     <h2 id="gameModalTitle"></h2>
-    <p id="gameModalDesc"></p>
-    <div id="gameModalLink" style="margin-top:10px;"></div>
+    <p id="gameModalDesc" style="margin-top:12px; color:#555; line-height:1.7;"></p>
+    <div id="gameModalLink" style="margin-top:14px;"></div>
     <div class="close" onclick="closeGame()">Close</div>
   </div>
 </div>
 
+<!-- ===================== SCRIPTS ===================== -->
 <script>
-  
-// LOADER
-window.addEventListener('load', ()=>{
+// ─── FIREBASE INIT ────────────────────────────────────────────
+const firebaseConfig = {
+  apiKey:            "AIzaSyBMEAAGp1BbsbTIktDVIY1aQ39c5l6kXXQ",
+  authDomain:        "dr3amstudi0s.firebaseapp.com",
+  projectId:         "dr3amstudi0s",
+  storageBucket:     "dr3amstudi0s.firebasestorage.app",
+  messagingSenderId: "453880003509",
+  appId:             "1:453880003509:web:5e01c05056bee24941b7fc",
+  measurementId:     "G-BWVEQE3E91"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+// ─── LOADER ───────────────────────────────────────────────────
+window.addEventListener('load', () => {
   const loader = document.getElementById('loader');
-  setTimeout(()=>{
-    loader.style.opacity='0';
-    setTimeout(()=>loader.remove(),800);
-  },1500);
+  setTimeout(() => {
+    loader.style.opacity = '0';
+    setTimeout(() => loader.remove(), 800);
+  }, 1500);
 });
 
-// DARK MODE
-if(localStorage.dark==="1") document.body.classList.add("dark");
-darkToggle.onclick = () => {
+// ─── DARK MODE ────────────────────────────────────────────────
+if (localStorage.dark === "1") document.body.classList.add("dark");
+document.getElementById('darkToggle').onclick = () => {
   document.body.classList.toggle("dark");
-  localStorage.dark = document.body.classList.contains("dark")?"1":"0";
+  localStorage.dark = document.body.classList.contains("dark") ? "1" : "0";
 };
 
-// SECTION REVEAL
-const observer = new IntersectionObserver(entries=>{
-  entries.forEach(entry=>{
-    if(entry.isIntersecting) entry.target.classList.add("show");
-  });
-},{threshold:0.2});
-document.querySelectorAll("section").forEach(sec=>observer.observe(sec));
+// ─── SECTION REVEAL ──────────────────────────────────────────
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("show"); });
+}, { threshold: 0.15 });
+document.querySelectorAll("section").forEach(s => observer.observe(s));
 
-// MODALS
+// ─── IMAGE MODAL ─────────────────────────────────────────────
 const imageModal = document.getElementById("imageModal");
-const modalImg = document.getElementById("modalImg");
-
-function openImage(src){
+const modalImg   = document.getElementById("modalImg");
+function openImage(src) {
   imageModal.style.display = "flex";
   modalImg.src = src;
 }
-imageModal.addEventListener("click", e=>{
-  if(e.target === imageModal){
-    imageModal.style.display = "none";
-  }
+imageModal.addEventListener("click", e => {
+  if (e.target === imageModal) imageModal.style.display = "none";
 });
 
+// ─── GAME MODAL ──────────────────────────────────────────────
 function openGame(game) {
-  const modal = document.getElementById("gameModal");
-  const title = document.getElementById("gameModalTitle");
-  const desc = document.getElementById("gameModalDesc");
-  const linkDiv = document.getElementById("gameModalLink");
+  const modal    = document.getElementById("gameModal");
+  const title    = document.getElementById("gameModalTitle");
+  const desc     = document.getElementById("gameModalDesc");
+  const linkDiv  = document.getElementById("gameModalLink");
 
-  if (game === 'experiment') {
-    title.textContent = "The Experiment (not released yet)";
-    desc.textContent = "A zombie survival game set in a mall where you go around trying to escape or find a cure by solving different puzzles and finding different clues.";
-    linkDiv.innerHTML = "";
-  } else if (game === 'firework') {
-    title.textContent = "Firework Simulator (beta)";
-    desc.textContent = "Try to have the most money and rebirths while launching beautiful fireworks!";
-    linkDiv.innerHTML = `<a href="https://thedr3amstudi0s-cmyk.github.io/FireworkSimulator/index.html" target="_blank" style="color:#4a90e2; text-decoration:underline;">Click To Play</a>`;
-  } else if (game === 'habit') {
-    title.textContent = "Habit Tracker";
-    desc.textContent = "Track your good habits to get a daily streak amd you can make new good habits";
-    linkDiv.innerHTML = `<a href="https://thedr3amstudi0s-cmyk.github.io/Habit-Tracker/" target="_blank" style="color:#4a90e2; text-decoration:underline;">Click To Try</a>`;
-  }
+  const games = {
+    experiment: {
+      title: "The Experiment (not released yet)",
+      desc:  "A zombie survival game set in a mall where you go around trying to escape or find a cure by solving different puzzles and finding different clues.",
+      link:  null
+    },
+    firework: {
+      title: "Firework Simulator (beta)",
+      desc:  "Try to have the most money and rebirths while launching beautiful fireworks!",
+      link:  { href: "https://thedr3amstudi0s-cmyk.github.io/FireworkSimulator/index.html", label: "Click To Play" }
+    },
+    habit: {
+      title: "Habit Tracker",
+      desc:  "Track your good habits to get a daily streak and make new positive routines.",
+      link:  { href: "https://thedr3amstudi0s-cmyk.github.io/Habit-Tracker/", label: "Click To Try" }
+    }
+  };
 
+  const g = games[game];
+  title.textContent = g.title;
+  desc.textContent  = g.desc;
+  linkDiv.innerHTML = g.link
+    ? `<a href="${g.link.href}" target="_blank" style="color:#4a90e2; text-decoration:underline;">${g.link.label}</a>`
+    : "";
   modal.style.display = "flex";
 }
-
 function closeGame() {
   document.getElementById("gameModal").style.display = "none";
 }
+document.getElementById("gameModal").addEventListener("click", e => {
+  if (e.target === document.getElementById("gameModal")) closeGame();
+});
 
-// COMMUNITY IDEAS SCRIPT
+// ─── COMMUNITY IDEAS ─────────────────────────────────────────
 const communityIdeas = [
-  { username: "Libbylobster", idea: "I am a big fan of this website, I got way into the firework simulator game and I'm excited to try the zombie game when it drops! Keep making cool games :)" },
-  { username: "User", idea: "" },
-  { username: "User", idea: "" }
+  { username: "Libbylobster", idea: "I am a big fan of this website, I got way into the firework simulator game and I'm excited to try the zombie game when it drops! Keep making cool games :)" }
 ];
-
 const ideasContainer = document.getElementById("communityIdeas");
+communityIdeas.forEach(item => {
+  if (!item.idea) return;
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = `<strong>${item.username}</strong><p>${item.idea}</p>`;
+  ideasContainer.appendChild(card);
+});
 
-if (ideasContainer) {
-  communityIdeas.forEach(item => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `<strong>${item.username}</strong><p>${item.idea}</p>`;
-    ideasContainer.appendChild(card);
-  });
+// ─── AUTH: WATCH LOGIN STATE ──────────────────────────────────
+auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    document.getElementById('authForms').style.display    = 'none';
+    document.getElementById('accountPanel').style.display = 'block';
+    document.getElementById('userEmailDisplay').textContent = user.email;
+
+    // Load newsletter preference from Firestore
+    try {
+      const doc = await db.collection('users').doc(user.uid).get();
+      const newsletterOn = doc.exists ? (doc.data().newsletter ?? true) : true;
+      setToggleVisual(newsletterOn);
+    } catch (err) {
+      console.error("Error loading user data:", err);
+    }
+  } else {
+    document.getElementById('authForms').style.display    = 'block';
+    document.getElementById('accountPanel').style.display = 'none';
+  }
+});
+
+// ─── AUTH: SWITCH SIGNUP / LOGIN ─────────────────────────────
+let currentMode = 'signup';
+function switchForm(mode) {
+  currentMode = mode;
+  const isSignup = mode === 'signup';
+  document.getElementById('authFormTitle').textContent      = isSignup ? 'Create Account' : 'Welcome Back';
+  document.getElementById('authSubmitBtn').textContent      = isSignup ? 'Create Account' : 'Log In';
+  document.getElementById('newsletterSignupRow').style.display = isSignup ? 'flex' : 'none';
+  document.getElementById('authError').textContent          = '';
+
+  document.getElementById('btnSignup').classList.toggle('active', isSignup);
+  document.getElementById('btnLogin').classList.toggle('active', !isSignup);
 }
+
+// ─── AUTH: HANDLE SUBMIT ─────────────────────────────────────
+async function handleAuth() {
+  const email    = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const errorEl  = document.getElementById('authError');
+  errorEl.textContent = '';
+
+  if (!email || !password) {
+    errorEl.textContent = 'Please fill in both fields.';
+    return;
+  }
+
+  const btn = document.getElementById('authSubmitBtn');
+  btn.textContent = 'Please wait...';
+  btn.disabled = true;
+
+  try {
+    if (currentMode === 'signup') {
+      const cred = await auth.createUserWithEmailAndPassword(email, password);
+      const wantsNewsletter = document.getElementById('newsletterSignup').checked;
+      await db.collection('users').doc(cred.user.uid).set({
+        email:      email,
+        newsletter: wantsNewsletter,
+        createdAt:  firebase.firestore.FieldValue.serverTimestamp()
+      });
+    } else {
+      await auth.signInWithEmailAndPassword(email, password);
+    }
+    // onAuthStateChanged handles the UI update
+  } catch (err) {
+    const messages = {
+      'auth/email-already-in-use': 'That email is already registered. Try logging in.',
+      'auth/invalid-email':        'Please enter a valid email address.',
+      'auth/weak-password':        'Password must be at least 6 characters.',
+      'auth/wrong-password':       'Incorrect password. Try again.',
+      'auth/user-not-found':       'No account found with that email.',
+      'auth/too-many-requests':    'Too many attempts. Please wait and try again.',
+      'auth/invalid-credential':   'Incorrect email or password.'
+    };
+    errorEl.textContent = messages[err.code] || 'Something went wrong. Please try again.';
+    btn.textContent = currentMode === 'signup' ? 'Create Account' : 'Log In';
+    btn.disabled = false;
+  }
+}
+
+// ─── NEWSLETTER TOGGLE ────────────────────────────────────────
+async function updateNewsletter(isOn) {
+  const user = auth.currentUser;
+  if (!user) return;
+  setToggleVisual(isOn);
+  try {
+    await db.collection('users').doc(user.uid).update({ newsletter: isOn });
+    const statusEl = document.getElementById('newsletterStatus');
+    statusEl.textContent = isOn
+      ? '✓ Subscribed to the weekly newsletter!'
+      : 'Unsubscribed. You won\'t receive weekly emails.';
+    setTimeout(() => { statusEl.textContent = ''; }, 3000);
+  } catch (err) {
+    console.error("Error updating newsletter pref:", err);
+  }
+}
+
+function setToggleVisual(isOn) {
+  document.getElementById('newsletterToggle').checked = isOn;
+  document.getElementById('toggleSlider').style.background  = isOn ? '#4a90e2' : '#ccc';
+  document.getElementById('toggleDot').style.transform      = isOn ? 'translateX(24px)' : 'translateX(0)';
+}
+
+// ─── SIGN OUT ─────────────────────────────────────────────────
+async function handleSignOut() {
+  await auth.signOut();
+}
+
+// ─── ENTER KEY SUBMITS AUTH FORM ─────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const forms = document.getElementById('authForms');
+    if (forms && forms.style.display !== 'none') handleAuth();
+  }
+});
 </script>
 
 </body>
 </html>
-
-
-
-
