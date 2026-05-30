@@ -300,7 +300,16 @@ body.dark .confirm-no:hover { background:#333; }
   <h2>Settings</h2>
   <div class="settings-panel">
     <h3>Account Settings</h3>
-    <p class="settings-email">Logged in as: <strong id="settingsEmail"></strong></p>
+    <p class="settings-email" style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+      Logged in as:&nbsp;
+      <strong id="settingsEmail"></strong>
+      <button onclick="toggleEmailVisibility()" id="emailToggleBtn"
+        style="padding:4px 12px; border-radius:14px; border:1px solid #4a90e2;
+               background:transparent; color:#4a90e2; cursor:pointer;
+               font-size:0.8rem; font-weight:500; white-space:nowrap; transition:0.2s;">
+        Hide
+      </button>
+    </p>
 
     <div class="newsletter-row">
       <div style="text-align:left;">
@@ -477,7 +486,10 @@ auth.onAuthStateChanged(async (user) => {
     `;
 
     // Populate settings
-    document.getElementById('settingsEmail').textContent = user.email;
+    actualEmail = user.email;
+    emailVisible = true;
+    document.getElementById('settingsEmail').textContent  = user.email;
+    document.getElementById('emailToggleBtn').textContent = 'Hide';
 
     // Load newsletter pref
     try {
@@ -609,6 +621,24 @@ function setToggleVisual(isOn) {
   document.getElementById('newsletterToggle').checked          = isOn;
   document.getElementById('toggleSlider').style.background     = isOn ? '#4a90e2' : '#ccc';
   document.getElementById('toggleDot').style.transform         = isOn ? 'translateX(24px)' : 'translateX(0)';
+}
+
+// ─── HIDE / SHOW EMAIL ───────────────────────────────────────
+let emailVisible = true;
+let actualEmail  = '';
+function toggleEmailVisibility() {
+  const el  = document.getElementById('settingsEmail');
+  const btn = document.getElementById('emailToggleBtn');
+  emailVisible = !emailVisible;
+  if (emailVisible) {
+    el.textContent  = actualEmail;
+    btn.textContent = 'Hide';
+  } else {
+    // mask as  a•••@domain.com
+    const [user, domain] = actualEmail.split('@');
+    el.textContent  = user.charAt(0) + '•••@' + domain;
+    btn.textContent = 'Show';
+  }
 }
 
 // ─── LOGOUT CONFIRM ───────────────────────────────────────────
