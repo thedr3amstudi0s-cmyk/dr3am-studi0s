@@ -341,8 +341,8 @@ body.dark .s-label { color:#666; }
             <input type="checkbox"
                    id="newsletterToggle"
                    onchange="updatePref('newsletter', this.checked)">
-            <span class="t-slider"></span>
-            <span class="t-dot"></span>
+            <span class="t-slider" id="ts-newsletter"></span>
+            <span class="t-dot" id="td-newsletter"></span>
           </label>
         </div>
     
@@ -355,8 +355,8 @@ body.dark .s-label { color:#666; }
             <input type="checkbox"
                    id="releasesToggle"
                    onchange="updatePref('notif_releases', this.checked)">
-            <span class="t-slider"></span>
-            <span class="t-dot"></span>
+            <span class="t-slider" id="ts-notif_releases"></span>
+            <span class="t-dot" id="td-notif_releases"></span>
           </label>
         </div>
     
@@ -369,14 +369,15 @@ body.dark .s-label { color:#666; }
             <input type="checkbox"
                    id="earlyAccessToggle"
                    onchange="updateEarlyAccess(this.checked)">
-            <span class="t-slider"></span>
-            <span class="t-dot"></span>
+            <span class="t-slider" id="ts-earlyAccess"></span>
+            <span class="t-dot" id="td-earlyAccess"></span>
           </label>
         </div>
     
         <p class="s-status" id="notifStatus"></p>
       </div>
     </div>
+
 
     <!-- PREFERENCES -->
     <div class="settings-body" id="tab-prefs" style="display:none;">
