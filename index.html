@@ -592,6 +592,7 @@ function setToggle(key, on) {
 
 // ── AUTH STATE ────────────────────────────────────────────────
 let actualEmail='', emailVisible=false;
+  const[u,d]=actualEmail.split('@'); el.textContent=u.charAt(0)+'•••@'+d;
 
 auth.onAuthStateChanged(async (user) => {
   const bar=document.getElementById('topBarAuth');
