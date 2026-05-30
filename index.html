@@ -621,6 +621,16 @@ auth.onAuthStateChanged(async (user) => {
 
     // Toggles — use exact field keys matching ts-/td- IDs
     const newsOn=data.newsletter??true;
+    // ── SYNC EMAILS COLLECTION ON LOGIN ──
+    const emailRef = db.collection('emails_collection').doc(user.uid);
+    
+    if (newsOn) {
+      // ensure email exists if subscribed
+      await emailRef.set({ email: user.email }).catch(()=>{});
+    } else {
+      // ensure it's removed if unsubscribed
+      await emailRef.delete().catch(()=>{});
+    }
     const sl=document.getElementById('ts-newsletter'), dl=document.getElementById('td-newsletter'), cl=document.getElementById('newsletterToggle');
     if(sl) sl.style.background=newsOn?'#4a90e2':'#ccc';
     if(dl) dl.style.transform=newsOn?'translateX(24px)':'translateX(0)';
