@@ -290,15 +290,6 @@ body.dark .s-label { color:#666; }
         </select>
         <p class="s-status" id="favoriteStatus"></p>
       </div>
-      <div class="s-group">
-        <div class="s-label">Email Address</div>
-        <div class="s-row">
-          <div class="s-row-info">
-          </div>
-          <button class="s-btn s-btn-warn" id="emailToggleBtn" onclick="toggleEmailVisibility()">Hide</button>
-        </div>
-      </div>
-    </div>
 
     <!-- ACCOUNT -->
     <div class="settings-body" id="tab-account" style="display:none;">
@@ -534,7 +525,7 @@ function closeOverlay(id) { document.getElementById(id).classList.remove('show')
 function handleOverlayClick(e,id) { if(e.target===document.getElementById(id)) closeOverlay(id); }
 
 // ── AVATARS ───────────────────────────────────────────────────
-const AVATARS = ['🎮','🕹️','👾','🚀','🧟','🎆','🌙','⚡','🔥','💎','🐉','🎯'];
+const AVATARS = ['🎮','🕹️','👾','🚀','🧟','🎆','🌙','⚡','🔥','💎','🐉','🎯','❗'];
 function buildAvatarGrid() {
   const g = document.getElementById('avatarGrid');
   g.innerHTML = '';
