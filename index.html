@@ -326,41 +326,54 @@ body.dark .s-label { color:#666; }
         </div>
       </div>
     </div>
-
+    
     <!-- NOTIFICATIONS -->
     <div class="settings-body" id="tab-notifs" style="display:none;">
       <div class="s-group">
         <div class="s-label">Email Notifications</div>
+    
         <div class="s-row">
           <div class="s-row-info">
             <p>Weekly Newsletter</p>
             <small>Game updates, dev notes & community highlights</small>
           </div>
           <label class="toggle-switch">
-            <input type="checkbox" id="newsletterToggle" onchange="updatePref('newsletter',this.checked)">
-            <span class="t-slider" id="ts-newsletter"></span><span class="t-dot" id="td-newsletter"></span>
+            <input type="checkbox"
+                   id="newsletterToggle"
+                   onchange="updatePref('newsletter', this.checked)">
+            <span class="t-slider"></span>
+            <span class="t-dot"></span>
           </label>
         </div>
+    
         <div class="s-row">
           <div class="s-row-info">
             <p>New Game Releases</p>
             <small>Be first to know when a new game drops</small>
           </div>
           <label class="toggle-switch">
-            <input type="checkbox" id="releasesToggle" onchange="updatePref('notif_releases',this.checked)">
-            <span class="t-slider" id="ts-notif_releases"></span><span class="t-dot" id="td-notif_releases"></span>
+            <input type="checkbox"
+                   id="releasesToggle"
+                   onchange="updatePref('notif_releases', this.checked)">
+            <span class="t-slider"></span>
+            <span class="t-dot"></span>
           </label>
         </div>
+    
         <div class="s-row">
           <div class="s-row-info">
             <p>Early Access Opt-In</p>
             <small>Get invited to test games before public release</small>
           </div>
           <label class="toggle-switch">
-            <input type="checkbox" id="earlyAccessToggle" onchange="updateEarlyAccess(this.checked)">
-            <span class="t-slider" id="ts-earlyAccess"></span><span class="t-dot" id="td-earlyAccess"></span>
+            <input type="checkbox"
+                   id="earlyAccessToggle"
+                   onchange="updateEarlyAccess(this.checked)">
+            <span class="t-slider"></span>
+            <span class="t-dot"></span>
           </label>
         </div>
+    
         <p class="s-status" id="notifStatus"></p>
       </div>
     </div>
