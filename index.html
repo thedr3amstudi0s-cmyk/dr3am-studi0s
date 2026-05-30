@@ -975,7 +975,10 @@ document.addEventListener('keydown',e=>{
 
 // ── HIDE ON START ─────────────────────────────────────────────
 window.addEventListener("load", () => {
-  const[u,d]=actualEmail.split('@'); el.textContent=u.charAt(0)+'•••@'+d;
+  emailVisible=false;
+  const el=document.getElementById('settingsEmail'), btn=document.getElementById('emailToggleBtn');
+  if(emailVisible){ el.textContent=actualEmail; btn.textContent='Hide'; }
+  else { const[u,d]=actualEmail.split('@'); el.textContent=u.charAt(0)+'•••@'+d; btn.textContent='Show'; }
 });
 </script>
 </body>
