@@ -564,7 +564,10 @@ function buildAvatarGrid() {
 function markAvatar(em) {
   document.querySelectorAll('.av-opt').forEach(b=>b.classList.toggle('selected',b.textContent===em));
 }
-
+  
+window.addEventListener("load", () => {
+  console.log("Page fully loaded or refreshed");
+});
 // ── DARK MODE ─────────────────────────────────────────────────
 function applyDark(on) {
   document.body.classList.toggle('dark',on);
@@ -592,7 +595,6 @@ function setToggle(key, on) {
 
 // ── AUTH STATE ────────────────────────────────────────────────
 let actualEmail='', emailVisible=false;
-  const[u,d]=actualEmail.split('@'); el.textContent=u.charAt(0)+'•••@'+d;
 
 auth.onAuthStateChanged(async (user) => {
   const bar=document.getElementById('topBarAuth');
