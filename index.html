@@ -564,10 +564,6 @@ function buildAvatarGrid() {
 function markAvatar(em) {
   document.querySelectorAll('.av-opt').forEach(b=>b.classList.toggle('selected',b.textContent===em));
 }
-  
-window.addEventListener("load", () => {
-  const[u,d]=actualEmail.split('@'); el.textContent=u.charAt(0)+'•••@'+d;
-});
 // ── DARK MODE ─────────────────────────────────────────────────
 function applyDark(on) {
   document.body.classList.toggle('dark',on);
@@ -975,6 +971,11 @@ function showStatus(id,msg){
 document.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&document.getElementById('authOverlay').classList.contains('show')) handleAuth();
   if(e.key==='Escape'){closeOverlay('authOverlay');closeOverlay('confirmLogout');closeOverlay('confirmDelete');closeGame();if(imageModal.style.display==='flex')imageModal.style.display='none';}
+});
+
+// ── HIDE ON START ─────────────────────────────────────────────
+window.addEventListener("load", () => {
+  const[u,d]=actualEmail.split('@'); el.textContent=u.charAt(0)+'•••@'+d;
 });
 </script>
 </body>
