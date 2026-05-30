@@ -785,29 +785,97 @@ async function confirmDeleteAccount() {
 
 // ── NOTIFICATIONS ─────────────────────────────────────────────
 async function updatePref(field, on) {
-  const user=auth.currentUser; if(!user)return;
-  const upd={}; upd[field]=on;
-  await db.collection('users').doc(user.uid).update(upd).catch(()=>{});
-  if(field==='newsletter'){
-    const ref=db.collection('emails_collection').doc(user.uid);
-    if(on) await ref.set({email:user.email}); else await ref.delete().catch(()=>{});
-    showStatus('notifStatus',on?'✓ Subscribed to newsletter!':'Unsubscribed from newsletter.');
+  const user = auth.currentUser;
+  if (!user) return;
+
+  // 🔥 INSTANT UI FEEDBACK (no refresh needed)
+  setToggle(field, on);
+
+  const upd = {};
+  upd[field] = on;
+
+  try {
+    await db.collection('users').doc(user.uid).update(upd);
+  } catch (e) {
+    console.error(e);
   }
-  if(field==='notif_releases') showStatus('notifStatus',on?'✓ Release notifications on!':'Release notifications off.');
+
+  // EMAIL COLLECTION SYNC (instant too)
+  if (field === 'newsletter') {
+    const ref = db.collection('emails_collection').doc(user.uid);
+
+    try {
+      if (on) {
+        await ref.set({ email: user.email });
+      } else {
+        await ref.delete();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
+    showStatus(
+      'notifStatus',
+      on ? '✓ Subscribed to newsletter!' : 'Unsubscribed from newsletter.'
+    );
+  }
+
+  if (field === 'notif_releases') {
+    showStatus(
+      'notifStatus',
+      on ? '✓ Release notifications on!' : 'Release notifications off.'
+    );
+  }
 }
 async function updateEarlyAccess(on) {
-  const user=auth.currentUser; if(!user)return;
-  await db.collection('users').doc(user.uid).update({earlyAccess:on}).catch(()=>{});
-  const ref=db.collection('early_access').doc(user.uid);
-  if(on) await ref.set({email:user.email,signedUp:firebase.firestore.FieldValue.serverTimestamp()});
-  else   await ref.delete().catch(()=>{});
-  showStatus('notifStatus',on?"✓ You're on the early access list! We'll reach out when testing begins.":'Removed from early access list.');
+  const user = auth.currentUser;
+  if (!user) return;
+
+  setToggle('earlyAccess', on);
+
+  try {
+    await db.collection('users').doc(user.uid).update({
+      earlyAccess: on
+    });
+  } catch (e) {
+    console.error(e);
+  }
+
+  const ref = db.collection('early_access').doc(user.uid);
+
+  try {
+    if (on) {
+      await ref.set({
+        email: user.email,
+        signedUp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    } else {
+      await ref.delete();
+    }
+  } catch (e) {
+    console.error(e);
+  }
+
+  showStatus(
+    'notifStatus',
+    on
+      ? "✓ You're on the early access list!"
+      : 'Removed from early access list.'
+  );
 }
 async function updateDarkMode(on) {
-  applyDark(on); localStorage.dark=on?'1':'0';
-  const user=auth.currentUser;
-  if(user) await db.collection('users').doc(user.uid).update({dark_mode:on}).catch(()=>{});
-  showStatus('prefStatus',on?'✓ Dark mode on.':'✓ Dark mode off.');
+  applyDark(on);
+  localStorage.dark = on ? '1' : '0';
+
+  const user = auth.currentUser;
+  if (user) {
+    db.collection('users')
+      .doc(user.uid)
+      .update({ dark_mode: on })
+      .catch(() => {});
+  }
+
+  showStatus('prefStatus', on ? '✓ Dark mode on.' : '✓ Dark mode off.');
 }
 
 // ── SOCIAL ────────────────────────────────────────────────────
