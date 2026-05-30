@@ -21,18 +21,102 @@ body { font-family:'Roboto', Arial, sans-serif; line-height:1.8; transition:0.4s
   background: linear-gradient(90deg, #9146FF, #4a90e2);
   color: white; padding: 10px 20px;
   display: flex; justify-content: space-between; align-items: center;
-  font-size: 0.95rem;
+  font-size: 0.95rem; gap: 12px;
 }
-.top-bar a { color: white; text-decoration: none; font-weight: 500; margin-left: 15px; }
+.top-bar-left { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.top-bar-right { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.top-bar a { color: white; text-decoration: none; font-weight: 500; }
 .top-bar a:hover { text-decoration: underline; }
 .dono-btn { background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; font-weight: 600; }
 
+/* TOP BAR AUTH BUTTONS */
+.tb-btn {
+  padding: 6px 16px; border-radius: 20px; font-size: 0.88rem;
+  font-weight: 600; cursor: pointer; border: 2px solid white;
+  transition: 0.2s; white-space: nowrap;
+}
+.tb-btn-login  { background: transparent; color: white; }
+.tb-btn-login:hover  { background: rgba(255,255,255,0.15); }
+.tb-btn-signup { background: white; color: #4a90e2; }
+.tb-btn-signup:hover { background: rgba(255,255,255,0.85); }
+.tb-btn-logout { background: transparent; color: white; border-color: rgba(255,255,255,0.6); font-size:0.85rem; }
+.tb-btn-logout:hover { background: rgba(255,100,100,0.25); border-color:white; }
+
+/* USER PILL */
+.user-pill {
+  display:flex; align-items:center; gap:8px;
+  background: rgba(255,255,255,0.15); padding: 5px 14px 5px 8px;
+  border-radius: 20px; cursor:pointer; transition:0.2s;
+  font-size:0.88rem; font-weight:500; color:white;
+  text-decoration:none;
+}
+.user-pill:hover { background: rgba(255,255,255,0.25); }
+.user-avatar {
+  width:26px; height:26px; border-radius:50%;
+  background: white; color:#4a90e2;
+  display:flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:0.8rem; flex-shrink:0;
+}
+
+/* CONFIRM DIALOG OVERLAY */
+.confirm-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.6);
+  display:none; justify-content:center; align-items:center; z-index:99999;
+}
+.confirm-box {
+  background:white; padding:32px 28px; border-radius:18px; text-align:center;
+  max-width:340px; width:90%; box-shadow:0 20px 50px rgba(0,0,0,0.3);
+  animation: fadeIn 0.25s ease;
+}
+.confirm-box h3 { color:#333; margin-bottom:10px; font-size:1.2rem; }
+.confirm-box p  { color:#666; margin-bottom:24px; font-size:0.95rem; line-height:1.5; }
+.confirm-btns   { display:flex; gap:12px; justify-content:center; }
+.confirm-yes { padding:10px 24px; background:#e74c3c; color:white; border:none; border-radius:10px; cursor:pointer; font-weight:600; font-size:0.95rem; }
+.confirm-yes:hover { background:#c0392b; }
+.confirm-no  { padding:10px 24px; background:#f0f0f0; color:#333; border:none; border-radius:10px; cursor:pointer; font-weight:600; font-size:0.95rem; }
+.confirm-no:hover  { background:#ddd; }
+
+/* AUTH MODAL OVERLAY */
+.auth-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.65);
+  display:none; justify-content:center; align-items:center; z-index:9998; padding:20px;
+}
+.auth-modal {
+  background:white; padding:35px 30px; border-radius:20px;
+  max-width:420px; width:100%; box-shadow:0 20px 50px rgba(0,0,0,0.3);
+  animation: fadeIn 0.3s ease; position:relative;
+}
+.auth-modal-close {
+  position:absolute; top:14px; right:18px;
+  font-size:1.5rem; cursor:pointer; color:#aaa; line-height:1;
+}
+.auth-modal-close:hover { color:#333; }
+.auth-tabs { display:flex; gap:10px; justify-content:center; margin-bottom:22px; }
+.auth-tab {
+  padding:8px 22px; border-radius:20px; border:2px solid #4a90e2;
+  cursor:pointer; font-weight:500; font-size:0.95rem; transition:0.2s;
+}
+.auth-tab.active { background:#4a90e2; color:white; }
+.auth-tab:not(.active) { background:transparent; color:#4a90e2; }
+.auth-input {
+  width:100%; padding:14px; border-radius:10px; border:1px solid #ccc;
+  font-size:1rem; margin-bottom:12px; box-sizing:border-box; font-family:inherit;
+}
+.auth-input:focus { outline:none; border-color:#4a90e2; }
+#authError { color:#e74c3c; font-size:0.9rem; margin-bottom:10px; text-align:center; min-height:18px; }
+.auth-submit {
+  width:100%; padding:14px; background:#4a90e2; color:white;
+  border:none; border-radius:10px; font-size:1rem; font-weight:500; cursor:pointer;
+}
+.auth-submit:hover { background:#357ABD; }
+
 /* LOADER */
-#loader { position:fixed; inset:0; background:#4a90e2; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; opacity:1; transition:opacity 0.7s; }
+#loader { position:fixed; inset:0; background:#4a90e2; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:99998; opacity:1; transition:opacity 0.7s; }
 #loader .logo-svg { width:150px; height:80px; margin:0 auto 15px; display:block; }
 #loader .logo-svg path { stroke-dasharray:400; stroke-dashoffset:400; animation:drawPath 2s forwards; stroke:#fff; stroke-width:5; fill:transparent; stroke-linecap:round; }
 #loader .loader-text { color:white; font-size:1.3rem; letter-spacing:1px; margin-top:20px; }
 @keyframes drawPath { to { stroke-dashoffset:0; } }
+@keyframes fadeIn { from{opacity:0;transform:scale(0.95);}to{opacity:1;transform:scale(1);} }
 
 /* HEADER */
 header { position:relative; text-align:center; padding:80px 20px; box-shadow:0 0 25px rgba(0,0,0,0.15); }
@@ -47,10 +131,31 @@ header h1 { margin-top:10px; }
 header p { margin-top:10px; font-size:1.2rem; color:#222; opacity:0.85; }
 
 /* MAIN */
-main { max-width:1200px; margin:100px auto; padding:0 30px; }
+main { max-width:1200px; margin:60px auto; padding:0 30px; }
 section { margin-bottom:120px; opacity:0; transform:translateY(50px); transition:1s ease; }
 section.show { opacity:1; transform:translateY(0); }
 section h2 { text-align:center; font-size:2.6rem; margin-bottom:25px; color:#4a90e2; }
+
+/* SETTINGS PANEL */
+#settingsSection { display:none; }
+#settingsSection.show { display:block; }
+.settings-panel {
+  max-width:480px; margin:0 auto;
+  background:white; border-radius:18px;
+  padding:30px; box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+.settings-panel h3 { color:#4a90e2; margin-bottom:20px; font-size:1.3rem; }
+.settings-email { font-size:0.95rem; color:#555; margin-bottom:20px; }
+.newsletter-row {
+  display:flex; align-items:center; justify-content:space-between;
+  background:#f0f6ff; padding:14px 18px; border-radius:12px;
+  margin-bottom:16px; border:1px solid #d0e4ff;
+}
+.toggle-switch { position:relative; display:inline-block; width:50px; height:26px; cursor:pointer; }
+.toggle-switch input { opacity:0; width:0; height:0; }
+.toggle-slider { position:absolute; inset:0; border-radius:26px; background:#ccc; transition:0.3s; }
+.toggle-dot { position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%; background:white; transition:0.3s; pointer-events:none; }
+#newsletterStatus { font-size:0.85rem; color:#4a90e2; min-height:18px; margin-bottom:6px; }
 
 /* ABOUT */
 .about-text { max-width:900px; margin:auto; text-align:center; font-size:1.15rem; line-height:2; }
@@ -69,66 +174,15 @@ section h2 { text-align:center; font-size:2.6rem; margin-bottom:25px; color:#4a9
 .modal { position:fixed; inset:0; background:rgba(0,0,0,0.85); display:none; justify-content:center; align-items:center; z-index:999; padding:20px; }
 .modal-content { background:white; padding:25px; max-width:90%; max-height:90%; border-radius:18px; text-align:center; overflow:auto; box-shadow:0 15px 35px rgba(0,0,0,0.25); animation:fadeIn 0.4s ease; }
 .modal img { max-width:100%; max-height:70vh; border-radius:12px; object-fit:contain; }
-@keyframes fadeIn { from{opacity:0;transform:scale(0.95);}to{opacity:1;transform:scale(1);} }
 .close { margin-top:20px; cursor:pointer; color:#4a90e2; font-weight:500; }
 
 /* FORM */
-form { max-width:650px; margin:auto; display:flex; flex-direction:column; gap:18px; }
 input[type="text"], input[type="email"], textarea {
   padding:16px; border-radius:10px; border:1px solid #ccc; font-size:1rem; font-family:inherit;
 }
-button { padding:16px; background:#4a90e2; color:white; border:none; border-radius:10px; cursor:pointer; font-weight:500; font-size:1rem; }
-button:hover { background:#357ABD; }
-
-/* AUTH PANEL */
-#authPanel {
-  max-width:440px; margin:0 auto 40px; padding:30px;
-  background:white; border-radius:18px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.1);
-}
-.auth-tabs { display:flex; gap:10px; justify-content:center; margin-bottom:20px; }
-.auth-tab {
-  padding:8px 22px; border-radius:20px; border:2px solid #4a90e2;
-  cursor:pointer; font-weight:500; font-size:0.95rem; transition:0.2s;
-}
-.auth-tab.active { background:#4a90e2; color:white; }
-.auth-tab:not(.active) { background:transparent; color:#4a90e2; }
-.auth-input {
-  width:100%; padding:14px; border-radius:10px; border:1px solid #ccc;
-  font-size:1rem; margin-bottom:12px; box-sizing:border-box; font-family:inherit;
-}
-.auth-input:focus { outline:none; border-color:#4a90e2; }
-#authError { color:#e74c3c; font-size:0.9rem; margin-bottom:10px; text-align:center; min-height:20px; }
-.auth-submit {
-  width:100%; padding:14px; background:#4a90e2; color:white;
-  border:none; border-radius:10px; font-size:1rem; font-weight:500; cursor:pointer;
-}
-.auth-submit:hover { background:#357ABD; }
-
-/* NEWSLETTER TOGGLE */
-.newsletter-row {
-  display:flex; align-items:center; justify-content:space-between;
-  background:#f0f6ff; padding:14px 18px; border-radius:12px;
-  margin:20px 0; border:1px solid #d0e4ff;
-}
-.toggle-switch { position:relative; display:inline-block; width:50px; height:26px; cursor:pointer; }
-.toggle-switch input { opacity:0; width:0; height:0; }
-.toggle-slider {
-  position:absolute; inset:0; border-radius:26px;
-  background:#ccc; transition:0.3s;
-}
-.toggle-dot {
-  position:absolute; top:3px; left:3px;
-  width:20px; height:20px; border-radius:50%;
-  background:white; transition:0.3s; pointer-events:none;
-}
-#newsletterStatus { font-size:0.85rem; color:#4a90e2; min-height:20px; text-align:center; }
-.signout-btn {
-  padding:10px 24px; border-radius:20px; border:2px solid #e74c3c;
-  background:transparent; color:#e74c3c; cursor:pointer; font-weight:500;
-  font-size:0.95rem; margin-top:10px;
-}
-.signout-btn:hover { background:#e74c3c; color:white; }
+.idea-form { max-width:650px; margin:auto; display:flex; flex-direction:column; gap:18px; }
+.idea-form button { padding:16px; background:#4a90e2; color:white; border:none; border-radius:10px; cursor:pointer; font-weight:500; font-size:1rem; }
+.idea-form button:hover { background:#357ABD; }
 
 /* FOOTER */
 footer { background:#1f1f1f; color:white; }
@@ -136,7 +190,8 @@ footer { background:#1f1f1f; color:white; }
 
 /* DARK MODE */
 body.dark { background: linear-gradient(to bottom,#00111f,#0a0a0a,#00111f); color:#e0e0e0; }
-body.dark .card, body.dark .gallery-item, body.dark .modal-content, body.dark #authPanel { background:#1b1b1b; }
+body.dark .card, body.dark .gallery-item, body.dark .modal-content,
+body.dark .settings-panel, body.dark .auth-modal, body.dark .confirm-box { background:#1b1b1b; color:#e0e0e0; }
 body.dark .card p { color:#aaa; }
 body.dark section h2 { color:#7ab6ff; }
 body.dark header p { color:#c0c0c0; }
@@ -144,21 +199,70 @@ body.dark .top-bar { background: linear-gradient(90deg,#5e2bbf,#1b3a5f); }
 body.dark .auth-input { background:#2a2a2a; border-color:#444; color:#e0e0e0; }
 body.dark .newsletter-row { background:#1a2a3a; border-color:#2a4a6a; }
 body.dark .auth-tab:not(.active) { color:#7ab6ff; border-color:#7ab6ff; }
+body.dark .settings-email { color:#aaa; }
+body.dark .confirm-box h3 { color:#e0e0e0; }
+body.dark .confirm-box p { color:#aaa; }
+body.dark .confirm-no { background:#2a2a2a; color:#e0e0e0; }
+body.dark .confirm-no:hover { background:#333; }
 
-/* RESPONSIVE */
 @media(max-width:800px){ .games,.gallery{flex-direction:column;align-items:center} }
+@media(max-width:600px){
+  .top-bar-left { font-size:0.8rem; }
+  .tb-btn { padding:5px 11px; font-size:0.8rem; }
+}
 </style>
 </head>
 <body>
 
 <!-- TOP BAR -->
 <div class="top-bar">
-  <div>
-    🎮 <strong>Official sponsor of: officer_waffle</strong>
+  <div class="top-bar-left">
+    🎮 <strong>Sponsor: officer_waffle</strong>
     <a href="https://twitch.tv/officer_waffle" target="_blank">twitch.tv/officer_waffle</a>
+    <span style="opacity:0.5;">|</span>
+    <a href="https://cash.app/$doctorwaffle500" target="_blank" class="dono-btn">❤️ Donate</a>
   </div>
-  <div>
-    <a href="https://cash.app/$doctorwaffle500" target="_blank" class="dono-btn">❤️ Donate to Dreamcrusher</a>
+  <div class="top-bar-right" id="topBarAuth">
+    <!-- Populated by JS based on auth state -->
+  </div>
+</div>
+
+<!-- LOGOUT CONFIRM DIALOG -->
+<div class="confirm-overlay" id="confirmLogout">
+  <div class="confirm-box">
+    <h3>Sign Out?</h3>
+    <p>Are you sure you want to sign out of your DR3AM STUDI0S account?</p>
+    <div class="confirm-btns">
+      <button class="confirm-no"  onclick="closeConfirm()">Cancel</button>
+      <button class="confirm-yes" onclick="confirmSignOut()">Sign Out</button>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH MODAL (Login / Signup) -->
+<div class="auth-overlay" id="authOverlay" onclick="handleOverlayClick(event)">
+  <div class="auth-modal">
+    <span class="auth-modal-close" onclick="closeAuthModal()">&#x2715;</span>
+    <h3 id="authFormTitle" style="text-align:center; color:#4a90e2; margin-bottom:18px;">Create Account</h3>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="btnSignup" onclick="switchForm('signup')">Sign Up</button>
+      <button class="auth-tab"        id="btnLogin"  onclick="switchForm('login')">Log In</button>
+    </div>
+
+    <input class="auth-input" id="authEmail"    type="email"    placeholder="Email address">
+    <input class="auth-input" id="authPassword" type="password" placeholder="Password (min 6 chars)">
+
+    <!-- Newsletter opt-in — signup only -->
+    <div id="newsletterSignupRow" style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+      <input type="checkbox" id="newsletterSignup" checked
+        style="width:18px; height:18px; cursor:pointer; accent-color:#4a90e2; flex-shrink:0;">
+      <label for="newsletterSignup" style="cursor:pointer; color:#555; font-size:0.92rem; line-height:1.4;">
+        Subscribe to the DR3AM STUDI0S weekly newsletter
+      </label>
+    </div>
+
+    <div id="authError"></div>
+    <button class="auth-submit" id="authSubmitBtn" onclick="handleAuth()">Create Account</button>
   </div>
 </div>
 
@@ -179,7 +283,6 @@ body.dark .auth-tab:not(.active) { color:#7ab6ff; border-color:#7ab6ff; }
   <h1>DR3AM STUDI0S</h1>
   <p>Fun, imaginative, high-quality indie games for all players. (Owned by dreamcrusher) Go check out SpaceBoundCowboys.store — GO SBC!</p>
   <nav>
-    <a href="#account">Account</a>
     <a href="#games">Games</a>
     <a href="#gallery">Gallery</a>
     <a href="#ideas">Ideas</a>
@@ -192,63 +295,27 @@ body.dark .auth-tab:not(.active) { color:#7ab6ff; border-color:#7ab6ff; }
 
 <main>
 
-<!-- ACCOUNT SECTION -->
-<section id="account">
-  <h2>Your Account</h2>
-  <p style="text-align:center; margin-bottom:25px; color:#555;">Sign up to manage your newsletter subscription and stay up to date.</p>
+<!-- SETTINGS (only visible when logged in and user clicks Settings) -->
+<section id="settingsSection">
+  <h2>Settings</h2>
+  <div class="settings-panel">
+    <h3>Account Settings</h3>
+    <p class="settings-email">Logged in as: <strong id="settingsEmail"></strong></p>
 
-  <div id="authPanel">
-
-    <!-- NOT LOGGED IN -->
-    <div id="authForms">
-      <h3 id="authFormTitle" style="text-align:center; color:#4a90e2; margin-bottom:20px;">Create Account</h3>
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="btnSignup" onclick="switchForm('signup')">Sign Up</button>
-        <button class="auth-tab" id="btnLogin" onclick="switchForm('login')">Log In</button>
+    <div class="newsletter-row">
+      <div style="text-align:left;">
+        <p style="font-weight:500; color:#333; margin:0 0 3px;">Weekly Newsletter</p>
+        <p style="font-size:0.85rem; color:#777; margin:0;">Game updates, new releases & dev notes</p>
       </div>
-
-      <input class="auth-input" id="authEmail" type="email" placeholder="Email address">
-      <input class="auth-input" id="authPassword" type="password" placeholder="Password (min 6 chars)">
-
-      <!-- Newsletter checkbox — signup only -->
-      <div id="newsletterSignupRow" style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
-        <input type="checkbox" id="newsletterSignup" checked
-          style="width:18px; height:18px; cursor:pointer; accent-color:#4a90e2;">
-        <label for="newsletterSignup" style="cursor:pointer; color:#555; font-size:0.95rem;">
-          Subscribe to the DR3AM STUDI0S weekly newsletter
-        </label>
-      </div>
-
-      <div id="authError"></div>
-      <button class="auth-submit" id="authSubmitBtn" onclick="handleAuth()">Create Account</button>
+      <label class="toggle-switch">
+        <input type="checkbox" id="newsletterToggle" onchange="updateNewsletter(this.checked)">
+        <span class="toggle-slider" id="toggleSlider"></span>
+        <span class="toggle-dot"   id="toggleDot"></span>
+      </label>
     </div>
-
-    <!-- LOGGED IN -->
-    <div id="accountPanel" style="display:none; text-align:center;">
-      <p style="font-size:1.05rem; color:#333; margin-bottom:6px;">
-        Welcome back, <strong id="userEmailDisplay" style="color:#4a90e2;"></strong>
-      </p>
-
-      <div class="newsletter-row">
-        <div style="text-align:left;">
-          <p style="font-weight:500; color:#333; margin:0 0 3px;">Weekly Newsletter</p>
-          <p style="font-size:0.85rem; color:#777; margin:0;">Game updates, new releases & dev notes</p>
-        </div>
-        <label class="toggle-switch">
-          <input type="checkbox" id="newsletterToggle" onchange="updateNewsletter(this.checked)">
-          <span class="toggle-slider" id="toggleSlider"></span>
-          <span class="toggle-dot" id="toggleDot"></span>
-        </label>
-      </div>
-
-      <p id="newsletterStatus"></p>
-      <button class="signout-btn" onclick="handleSignOut()">Sign Out</button>
-    </div>
-
+    <p id="newsletterStatus"></p>
   </div>
 </section>
-
-<div class="divider"></div>
 
 <!-- GAMES -->
 <section id="games">
@@ -277,11 +344,11 @@ body.dark .auth-tab:not(.active) { color:#7ab6ff; border-color:#7ab6ff; }
   <h2>Gallery</h2>
   <p style="text-align:center; margin-bottom:20px; color:#555;">Click images to view larger screenshots.</p>
   <div class="gallery">
-    <div class="gallery-item"><img src="images/game1.png" onclick="openImage(this.src)" alt="Game screenshot 1"></div>
-    <div class="gallery-item"><img src="images/game2.png" onclick="openImage(this.src)" alt="Game screenshot 2"></div>
-    <div class="gallery-item"><img src="images/game3.png" onclick="openImage(this.src)" alt="Game screenshot 3"></div>
-    <div class="gallery-item"><img src="images/game4.png" onclick="openImage(this.src)" alt="Game screenshot 4"></div>
-    <div class="gallery-item"><img src="images/game5.png" onclick="openImage(this.src)" alt="Game screenshot 5"></div>
+    <div class="gallery-item"><img src="images/game1.png" onclick="openImage(this.src)" alt="Screenshot 1"></div>
+    <div class="gallery-item"><img src="images/game2.png" onclick="openImage(this.src)" alt="Screenshot 2"></div>
+    <div class="gallery-item"><img src="images/game3.png" onclick="openImage(this.src)" alt="Screenshot 3"></div>
+    <div class="gallery-item"><img src="images/game4.png" onclick="openImage(this.src)" alt="Screenshot 4"></div>
+    <div class="gallery-item"><img src="images/game5.png" onclick="openImage(this.src)" alt="Screenshot 5"></div>
   </div>
 </section>
 
@@ -290,10 +357,10 @@ body.dark .auth-tab:not(.active) { color:#7ab6ff; border-color:#7ab6ff; }
 <!-- IDEAS -->
 <section id="ideas">
   <h2>Share Your Ideas</h2>
-  <form action="https://formspree.io/f/mjgbedkv" method="POST">
-    <input type="text" name="name" placeholder="Your Name" required>
+  <form class="idea-form" action="https://formspree.io/f/mjgbedkv" method="POST">
+    <input type="text"  name="name"    placeholder="Your Name"  required>
     <input type="email" name="_replyto" placeholder="Your Email" required>
-    <textarea name="idea" placeholder="Your Idea" required style="padding:16px; border-radius:10px; border:1px solid #ccc; font-size:1rem; font-family:inherit; min-height:120px;"></textarea>
+    <textarea name="idea" placeholder="Your Idea" required style="padding:16px;border-radius:10px;border:1px solid #ccc;font-size:1rem;font-family:inherit;min-height:120px;"></textarea>
     <button type="submit">Send</button>
   </form>
 </section>
@@ -355,7 +422,7 @@ body.dark .auth-tab:not(.active) { color:#7ab6ff; border-color:#7ab6ff; }
   </div>
 </div>
 
-<!-- ===================== SCRIPTS ===================== -->
+<!-- ===================== ALL SCRIPTS ===================== -->
 <script>
 // ─── FIREBASE INIT ────────────────────────────────────────────
 const firebaseConfig = {
@@ -388,121 +455,93 @@ document.getElementById('darkToggle').onclick = () => {
 };
 
 // ─── SECTION REVEAL ──────────────────────────────────────────
-const observer = new IntersectionObserver(entries => {
+const revealObserver = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("show"); });
-}, { threshold: 0.15 });
-document.querySelectorAll("section").forEach(s => observer.observe(s));
+}, { threshold: 0.1 });
+document.querySelectorAll("section").forEach(s => revealObserver.observe(s));
 
-// ─── IMAGE MODAL ─────────────────────────────────────────────
-const imageModal = document.getElementById("imageModal");
-const modalImg   = document.getElementById("modalImg");
-function openImage(src) {
-  imageModal.style.display = "flex";
-  modalImg.src = src;
-}
-imageModal.addEventListener("click", e => {
-  if (e.target === imageModal) imageModal.style.display = "none";
-});
-
-// ─── GAME MODAL ──────────────────────────────────────────────
-function openGame(game) {
-  const modal    = document.getElementById("gameModal");
-  const title    = document.getElementById("gameModalTitle");
-  const desc     = document.getElementById("gameModalDesc");
-  const linkDiv  = document.getElementById("gameModalLink");
-
-  const games = {
-    experiment: {
-      title: "The Experiment (not released yet)",
-      desc:  "A zombie survival game set in a mall where you go around trying to escape or find a cure by solving different puzzles and finding different clues.",
-      link:  null
-    },
-    firework: {
-      title: "Firework Simulator (beta)",
-      desc:  "Try to have the most money and rebirths while launching beautiful fireworks!",
-      link:  { href: "https://thedr3amstudi0s-cmyk.github.io/FireworkSimulator/index.html", label: "Click To Play" }
-    },
-    habit: {
-      title: "Habit Tracker",
-      desc:  "Track your good habits to get a daily streak and make new positive routines.",
-      link:  { href: "https://thedr3amstudi0s-cmyk.github.io/Habit-Tracker/", label: "Click To Try" }
-    }
-  };
-
-  const g = games[game];
-  title.textContent = g.title;
-  desc.textContent  = g.desc;
-  linkDiv.innerHTML = g.link
-    ? `<a href="${g.link.href}" target="_blank" style="color:#4a90e2; text-decoration:underline;">${g.link.label}</a>`
-    : "";
-  modal.style.display = "flex";
-}
-function closeGame() {
-  document.getElementById("gameModal").style.display = "none";
-}
-document.getElementById("gameModal").addEventListener("click", e => {
-  if (e.target === document.getElementById("gameModal")) closeGame();
-});
-
-// ─── COMMUNITY IDEAS ─────────────────────────────────────────
-const communityIdeas = [
-  { username: "Libbylobster", idea: "I am a big fan of this website, I got way into the firework simulator game and I'm excited to try the zombie game when it drops! Keep making cool games :)" }
-];
-const ideasContainer = document.getElementById("communityIdeas");
-communityIdeas.forEach(item => {
-  if (!item.idea) return;
-  const card = document.createElement("div");
-  card.className = "card";
-  card.innerHTML = `<strong>${item.username}</strong><p>${item.idea}</p>`;
-  ideasContainer.appendChild(card);
-});
-
-// ─── AUTH: WATCH LOGIN STATE ──────────────────────────────────
+// ─── AUTH STATE → TOP BAR ─────────────────────────────────────
 auth.onAuthStateChanged(async (user) => {
-  if (user) {
-    document.getElementById('authForms').style.display    = 'none';
-    document.getElementById('accountPanel').style.display = 'block';
-    document.getElementById('userEmailDisplay').textContent = user.email;
+  const bar = document.getElementById('topBarAuth');
+  const settingsSection = document.getElementById('settingsSection');
 
-    // Load newsletter preference from Firestore
+  if (user) {
+    // Build the top-bar: avatar pill (→settings) + Logout button
+    const initial = user.email.charAt(0).toUpperCase();
+    bar.innerHTML = `
+      <a class="user-pill" href="#settingsSection" onclick="showSettings()">
+        <span class="user-avatar">${initial}</span>
+        Settings
+      </a>
+      <button class="tb-btn tb-btn-logout" onclick="askLogout()">Log Out</button>
+    `;
+
+    // Populate settings
+    document.getElementById('settingsEmail').textContent = user.email;
+
+    // Load newsletter pref
     try {
       const doc = await db.collection('users').doc(user.uid).get();
-      const newsletterOn = doc.exists ? (doc.data().newsletter ?? true) : true;
-      setToggleVisual(newsletterOn);
-    } catch (err) {
-      console.error("Error loading user data:", err);
-    }
+      const on = doc.exists ? (doc.data().newsletter ?? true) : true;
+      setToggleVisual(on);
+    } catch(e) { console.error(e); }
+
   } else {
-    document.getElementById('authForms').style.display    = 'block';
-    document.getElementById('accountPanel').style.display = 'none';
+    // Not logged in — show Login + Sign Up buttons
+    bar.innerHTML = `
+      <button class="tb-btn tb-btn-login"  onclick="openAuthModal('login')">Log In</button>
+      <button class="tb-btn tb-btn-signup" onclick="openAuthModal('signup')">Sign Up</button>
+    `;
+    // Hide settings
+    settingsSection.style.display = 'none';
   }
 });
 
-// ─── AUTH: SWITCH SIGNUP / LOGIN ─────────────────────────────
+// ─── SHOW SETTINGS ───────────────────────────────────────────
+function showSettings() {
+  const sec = document.getElementById('settingsSection');
+  sec.style.display = 'block';
+  sec.classList.add('show');
+}
+
+// ─── AUTH MODAL ──────────────────────────────────────────────
 let currentMode = 'signup';
+
+function openAuthModal(mode) {
+  switchForm(mode);
+  document.getElementById('authOverlay').style.display = 'flex';
+  document.getElementById('authEmail').value    = '';
+  document.getElementById('authPassword').value = '';
+  document.getElementById('authError').textContent = '';
+  setTimeout(() => document.getElementById('authEmail').focus(), 100);
+}
+
+function closeAuthModal() {
+  document.getElementById('authOverlay').style.display = 'none';
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('authOverlay')) closeAuthModal();
+}
+
 function switchForm(mode) {
   currentMode = mode;
   const isSignup = mode === 'signup';
-  document.getElementById('authFormTitle').textContent      = isSignup ? 'Create Account' : 'Welcome Back';
-  document.getElementById('authSubmitBtn').textContent      = isSignup ? 'Create Account' : 'Log In';
+  document.getElementById('authFormTitle').textContent        = isSignup ? 'Create Account' : 'Welcome Back';
+  document.getElementById('authSubmitBtn').textContent        = isSignup ? 'Create Account' : 'Log In';
   document.getElementById('newsletterSignupRow').style.display = isSignup ? 'flex' : 'none';
-  document.getElementById('authError').textContent          = '';
-
-  document.getElementById('btnSignup').classList.toggle('active', isSignup);
-  document.getElementById('btnLogin').classList.toggle('active', !isSignup);
+  document.getElementById('authError').textContent            = '';
+  document.getElementById('btnSignup').classList.toggle('active',  isSignup);
+  document.getElementById('btnLogin').classList.toggle('active',  !isSignup);
 }
 
-// ─── AUTH: HANDLE SUBMIT ─────────────────────────────────────
 async function handleAuth() {
   const email    = document.getElementById('authEmail').value.trim();
   const password = document.getElementById('authPassword').value;
   const errorEl  = document.getElementById('authError');
   errorEl.textContent = '';
 
-  if (!email || !password) {
-    errorEl.textContent = 'Please fill in both fields.';
-    return;
-  }
+  if (!email || !password) { errorEl.textContent = 'Please fill in both fields.'; return; }
 
   const btn = document.getElementById('authSubmitBtn');
   btn.textContent = 'Please wait...';
@@ -512,26 +551,32 @@ async function handleAuth() {
     if (currentMode === 'signup') {
       const cred = await auth.createUserWithEmailAndPassword(email, password);
       const wantsNewsletter = document.getElementById('newsletterSignup').checked;
+      // Only store the email in newsletter collection if they opted in
       await db.collection('users').doc(cred.user.uid).set({
-        email:      email,
         newsletter: wantsNewsletter,
         createdAt:  firebase.firestore.FieldValue.serverTimestamp()
       });
+      // If opted in, also write to emails_collection for the Python mailer
+      if (wantsNewsletter) {
+        await db.collection('emails_collection').doc(cred.user.uid).set({
+          email: email
+        });
+      }
     } else {
       await auth.signInWithEmailAndPassword(email, password);
     }
-    // onAuthStateChanged handles the UI update
+    closeAuthModal();
   } catch (err) {
-    const messages = {
+    const msgs = {
       'auth/email-already-in-use': 'That email is already registered. Try logging in.',
       'auth/invalid-email':        'Please enter a valid email address.',
       'auth/weak-password':        'Password must be at least 6 characters.',
-      'auth/wrong-password':       'Incorrect password. Try again.',
+      'auth/wrong-password':       'Incorrect password.',
       'auth/user-not-found':       'No account found with that email.',
-      'auth/too-many-requests':    'Too many attempts. Please wait and try again.',
+      'auth/too-many-requests':    'Too many attempts. Please wait.',
       'auth/invalid-credential':   'Incorrect email or password.'
     };
-    errorEl.textContent = messages[err.code] || 'Something went wrong. Please try again.';
+    errorEl.textContent = msgs[err.code] || 'Something went wrong. Please try again.';
     btn.textContent = currentMode === 'signup' ? 'Create Account' : 'Log In';
     btn.disabled = false;
   }
@@ -543,34 +588,83 @@ async function updateNewsletter(isOn) {
   if (!user) return;
   setToggleVisual(isOn);
   try {
+    // Update preference flag on user doc
     await db.collection('users').doc(user.uid).update({ newsletter: isOn });
-    const statusEl = document.getElementById('newsletterStatus');
-    statusEl.textContent = isOn
-      ? '✓ Subscribed to the weekly newsletter!'
-      : 'Unsubscribed. You won\'t receive weekly emails.';
-    setTimeout(() => { statusEl.textContent = ''; }, 3000);
-  } catch (err) {
-    console.error("Error updating newsletter pref:", err);
-  }
+
+    // Add or remove from emails_collection (what the Python mailer reads)
+    const emailRef = db.collection('emails_collection').doc(user.uid);
+    if (isOn) {
+      await emailRef.set({ email: user.email });
+    } else {
+      await emailRef.delete();
+    }
+
+    const s = document.getElementById('newsletterStatus');
+    s.textContent = isOn ? '✓ Subscribed to the weekly newsletter!' : 'Unsubscribed. You won\'t receive emails.';
+    setTimeout(() => { s.textContent = ''; }, 3000);
+  } catch(e) { console.error(e); }
 }
 
 function setToggleVisual(isOn) {
-  document.getElementById('newsletterToggle').checked = isOn;
-  document.getElementById('toggleSlider').style.background  = isOn ? '#4a90e2' : '#ccc';
-  document.getElementById('toggleDot').style.transform      = isOn ? 'translateX(24px)' : 'translateX(0)';
+  document.getElementById('newsletterToggle').checked          = isOn;
+  document.getElementById('toggleSlider').style.background     = isOn ? '#4a90e2' : '#ccc';
+  document.getElementById('toggleDot').style.transform         = isOn ? 'translateX(24px)' : 'translateX(0)';
 }
 
-// ─── SIGN OUT ─────────────────────────────────────────────────
-async function handleSignOut() {
+// ─── LOGOUT CONFIRM ───────────────────────────────────────────
+function askLogout() {
+  document.getElementById('confirmLogout').style.display = 'flex';
+}
+function closeConfirm() {
+  document.getElementById('confirmLogout').style.display = 'none';
+}
+async function confirmSignOut() {
+  closeConfirm();
   await auth.signOut();
 }
+// Click outside confirm box to cancel
+document.getElementById('confirmLogout').addEventListener('click', e => {
+  if (e.target === document.getElementById('confirmLogout')) closeConfirm();
+});
 
-// ─── ENTER KEY SUBMITS AUTH FORM ─────────────────────────────
+// ─── IMAGE MODAL ─────────────────────────────────────────────
+const imageModal = document.getElementById("imageModal");
+function openImage(src) { imageModal.style.display = "flex"; document.getElementById('modalImg').src = src; }
+imageModal.addEventListener("click", e => { if (e.target === imageModal) imageModal.style.display = "none"; });
+
+// ─── GAME MODAL ──────────────────────────────────────────────
+const gameData = {
+  experiment: { title:"The Experiment (not released yet)", desc:"A zombie survival game set in a mall where you go around trying to escape or find a cure by solving different puzzles and finding different clues.", link:null },
+  firework:   { title:"Firework Simulator (beta)",         desc:"Try to have the most money and rebirths while launching beautiful fireworks!", link:{href:"https://thedr3amstudi0s-cmyk.github.io/FireworkSimulator/index.html", label:"Click To Play"} },
+  habit:      { title:"Habit Tracker",                     desc:"Track your good habits to get a daily streak and make new positive routines.",  link:{href:"https://thedr3amstudi0s-cmyk.github.io/Habit-Tracker/", label:"Click To Try"} }
+};
+function openGame(id) {
+  const g = gameData[id];
+  document.getElementById("gameModalTitle").textContent = g.title;
+  document.getElementById("gameModalDesc").textContent  = g.desc;
+  document.getElementById("gameModalLink").innerHTML    = g.link ? `<a href="${g.link.href}" target="_blank" style="color:#4a90e2;text-decoration:underline;">${g.link.label}</a>` : "";
+  document.getElementById("gameModal").style.display   = "flex";
+}
+function closeGame() { document.getElementById("gameModal").style.display = "none"; }
+document.getElementById("gameModal").addEventListener("click", e => { if(e.target === document.getElementById("gameModal")) closeGame(); });
+
+// ─── COMMUNITY IDEAS ─────────────────────────────────────────
+const communityIdeas = [
+  { username:"Libbylobster", idea:"I am a big fan of this website, I got way into the firework simulator game and I'm excited to try the zombie game when it drops! Keep making cool games :)" }
+];
+const ideasContainer = document.getElementById("communityIdeas");
+communityIdeas.forEach(item => {
+  if (!item.idea) return;
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = `<strong>${item.username}</strong><p>${item.idea}</p>`;
+  ideasContainer.appendChild(card);
+});
+
+// ─── ENTER KEY SUBMITS AUTH ───────────────────────────────────
 document.addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    const forms = document.getElementById('authForms');
-    if (forms && forms.style.display !== 'none') handleAuth();
-  }
+  if (e.key === 'Enter' && document.getElementById('authOverlay').style.display === 'flex') handleAuth();
+  if (e.key === 'Escape') { closeAuthModal(); closeConfirm(); closeGame(); }
 });
 </script>
 
