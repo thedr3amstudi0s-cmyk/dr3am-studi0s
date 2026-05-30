@@ -611,7 +611,7 @@ auth.onAuthStateChanged(async (user) => {
     `;
 
     // Populate all fields
-    actualEmail=user.email; emailVisible=true;
+    actualEmail=user.email; emailVisible=false;
     document.getElementById('settingsEmail').textContent=user.email;
     document.getElementById('emailToggleBtn').textContent='Hide';
     document.getElementById('displayNameInput').value=dn;
