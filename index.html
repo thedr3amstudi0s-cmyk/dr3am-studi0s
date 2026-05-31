@@ -1059,15 +1059,30 @@ let pendingIdeaDelete = null;
 const OWNER_UID = '4pkmNhMUE7Mh2cGU6ukJqDpvaRs1';
 
 function startIdeasListener() {
-  // Unsubscribe any previous listener
   if (ideasUnsubscribe) ideasUnsubscribe();
 
-  ideasUnsubscribe = db.collection('ideas')
+  // Try the full sorted query (requires composite index in Firebase Console)
+  // If the index doesn't exist yet, fall back to createdAt-only sort
+  const fullQuery = db.collection('ideas')
     .orderBy('pinned', 'desc')
-    .orderBy('createdAt', 'desc')
-    .onSnapshot(snap => {
-      renderIdeasFromSnapshot(snap);
-    }, err => console.error('Ideas listener error:', err));
+    .orderBy('createdAt', 'desc');
+
+  const fallbackQuery = db.collection('ideas')
+    .orderBy('createdAt', 'desc');
+
+  ideasUnsubscribe = fullQuery.onSnapshot(snap => {
+    renderIdeasFromSnapshot(snap);
+  }, err => {
+    if (err.code === 'failed-precondition' || err.message.includes('index')) {
+      console.warn('Composite index not ready yet — using fallback sort. Create the index at:', err.message.match(/https:\/\/\S+/)?.[0] || 'Firebase Console');
+      // Fall back to single-field sort until index is built
+      ideasUnsubscribe = fallbackQuery.onSnapshot(snap => {
+        renderIdeasFromSnapshot(snap);
+      }, err2 => console.error('Ideas fallback error:', err2));
+    } else {
+      console.error('Ideas listener error:', err);
+    }
+  });
 }
 
 function renderIdeasFromSnapshot(snap) {
