@@ -327,7 +327,7 @@ body.dark .s-label { color:#666; }
       </div>
       <div class="s-group">
         <div class="s-label">Profile Avatar</div>
-        <p style="font-size:0.86rem;color:#999;margin-bottom:10px;">Pick an emoji shown next to your name.</p>
+        <p style="font-size:0.86rem;color:#999;margin-bottom:10px;">Pick from over 150 different emojis for your profile</p>
         <div class="avatar-grid" id="avatarGrid"></div>
         <p class="s-status" id="avatarStatus"></p>
       </div>
@@ -642,31 +642,56 @@ function openOverlay(id)  { document.getElementById(id).classList.add('show'); }
 function closeOverlay(id) { document.getElementById(id).classList.remove('show'); }
 function handleOverlayClick(e,id) { if(e.target===document.getElementById(id)) closeOverlay(id); }
 
-// ── AVATARS ───────────────────────────────────────────────────
-const AVATARS = ['🎮','🕹️','👾','🚀','🧟','🎆','🌙','⚡','🔥','💎','🐉','🎯','😍','🏈','🏀','🏐',
-'⚽','🎾','🏓','🥎','🏒','🥍','🏹','🎳','🎲','♟️','🧩','🎭','🎨','🎬',
-'🎤','🎧','🎼','🎹','🥁','🎷','🎺','🎸','🪕','🎻','🎪','🎡','🎢','🎠',
-'🚗','🏎️','🚓','🚑','🚒','✈️','🛸','🚁','🚂','🚤','⛵','🛶','🚜','🛵',
-'🐺','🦊','🐻','🐼','🦁','🐯','🐸','🐵','🦅','🦉','🐍','🦖','🦕','🐙',
-'🌟','⭐','✨','☄️','🌈','🌊','🌪️','❄️','☀️','🌤️','⛈️','🌋','🏔️','🌴',
-'🍕','🍔','🌭','🍟','🌮','🌯','🍩','🍪','🎂','🍫','🍿','🥤','🧃','🍎',
-'💰','💸','🏆','🥇','🎖️','👑','💍','🪙','🔮','🗡️','🛡️','🏹','⚔️','🧙',
-'😎','🤩','🥳','😆','😂','🤣','😊','😁','😄','😜','🤖','👻','💀','☠️',
-'❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💖','💘','💝','💕','💞',
-'🔴','🟠','🟡','🟢','🔵','🟣','⚫','⚪','🟤','🔺','🔷','🔶','💠','⭐'];
-function buildAvatarGrid() {
-  const g = document.getElementById('avatarGrid');
-  g.innerHTML = '';
-  AVATARS.forEach(em => {
-    const b = document.createElement('button');
-    b.className='av-opt'; b.textContent=em;
-    b.onclick=()=>saveAvatar(em);
-    g.appendChild(b);
-  });
+<div id="avatarContainer"></div>
+
+<button id="showMore">Show More</button>
+<button id="showLess">Show Less</button>
+
+// ── AVITARS ──────────────────────────────────────────────────
+const avatars = [
+    '🎮','🕹️','👾','🚀','🧟','🎆','🌙','⚡','🔥','💎','🐉','🎯','😍','🏈','🏀','🏐',
+    '⚽','🎾','🏓','🥎','🏒','🥍','🏹','🎳','🎲','♟️','🧩','🎭','🎨','🎬',
+    '🎤','🎧','🎼','🎹','🥁','🎷','🎺','🎸','🪕','🎻','🎪','🎡','🎢','🎠',
+    '🚗','🏎️','🚓','🚑','🚒','✈️','🛸','🚁','🚂','🚤','⛵','🛶','🚜','🛵',
+    '🐺','🦊','🐻','🐼','🦁','🐯','🐸','🐵','🦅','🦉','🐍','🦖','🦕','🐙',
+    '🌟','⭐','✨','☄️','🌈','🌊','🌪️','❄️','☀️','🌤️','⛈️','🌋','🏔️','🌴',
+    '🍕','🍔','🌭','🍟','🌮','🌯','🍩','🍪','🎂','🍫','🍿','🥤','🧃','🍎',
+    '💰','💸','🏆','🥇','🎖️','👑','💍','🪙','🔮','🗡️','🛡️','🏹','⚔️','🧙',
+    '😎','🤩','🥳','😆','😂','🤣','😊','😁','😄','😜','🤖','👻','💀','☠️',
+    '❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💖','💘','💝','💕','💞',
+    '🔴','🟠','🟡','🟢','🔵','🟣','⚫','⚪','🟤','🔺','🔷','🔶','💠','⭐'
+];
+
+let visibleCount = 20;
+
+function renderAvatars() {
+    const container = document.getElementById('avatarContainer');
+
+    container.innerHTML = avatars
+        .slice(0, visibleCount)
+        .map(avatar => `
+            <button class="avatar-btn">${avatar}</button>
+        `)
+        .join('');
+
+    document.getElementById('showMore').style.display =
+        visibleCount >= avatars.length ? 'none' : 'inline-block';
+
+    document.getElementById('showLess').style.display =
+        visibleCount <= 20 ? 'none' : 'inline-block';
 }
-function markAvatar(em) {
-  document.querySelectorAll('.av-opt').forEach(b=>b.classList.toggle('selected',b.textContent===em));
-}
+
+document.getElementById('showMore').addEventListener('click', () => {
+    visibleCount = Math.min(visibleCount + 20, avatars.length);
+    renderAvatars();
+});
+
+document.getElementById('showLess').addEventListener('click', () => {
+    visibleCount = Math.max(visibleCount - 20, 20);
+    renderAvatars();
+});
+
+renderAvatars();
 
 // ── DARK MODE ─────────────────────────────────────────────────
 function applyDark(on) {
