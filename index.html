@@ -544,6 +544,13 @@ body.dark .s-label { color:#666; }
 
 <div class="divider"></div>
 
+<div id="avatarContainer"></div>
+
+<div class="avatar-controls">
+    <button id="showMore">Show More</button>
+    <button id="showLess" style="display:none;">Show Less</button>
+</div>
+    
 <!-- CONTACT -->
 <section id="contact">
   <h2>Contact</h2>
@@ -666,11 +673,6 @@ document.querySelectorAll('section').forEach(s=>ro.observe(s));
 function openOverlay(id)  { document.getElementById(id).classList.add('show'); }
 function closeOverlay(id) { document.getElementById(id).classList.remove('show'); }
 function handleOverlayClick(e,id) { if(e.target===document.getElementById(id)) closeOverlay(id); }
-
-<div id="avatarContainer"></div>
-
-<button id="showMore">Show More</button>
-<button id="showLess">Show Less</button>
 
 // ── AVITARS ──────────────────────────────────────────────────
 const avatars = [
