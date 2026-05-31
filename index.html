@@ -524,7 +524,7 @@ body.dark .s-label { color:#666; }
 <!-- COMMUNITY IDEAS -->
 <section id="community-ideas">
   <h2>Community Ideas/Comments</h2>
-  <p style="text-align:center;margin-bottom:20px;color:#555;">Ideas from the community. Log in to upvote!</p>
+  <p style="text-align:center;margin-bottom:20px;color:#555;" id="communitySubtitle">Ideas from the community. Log in to upvote!</p>
   <div class="games" id="communityIdeas"></div>
 </section>
 
@@ -693,6 +693,8 @@ auth.onAuthStateChanged(async (user) => {
     currentUserVotes = data.upvotes || [];
     loadCommunityIdeas();
     sec.style.display='block';
+    const sub = document.getElementById('communitySubtitle');
+    if (sub) sub.textContent = 'Ideas from the community. Click ▲ to upvote!';
   } else {
     bar.innerHTML=`
       <button class="tb-btn tb-btn-login"  onclick="openAuthModal('login')">Log In</button>
@@ -701,6 +703,8 @@ auth.onAuthStateChanged(async (user) => {
     sec.style.display='none';
     currentUserVotes = [];
     loadCommunityIdeas();
+    const sub = document.getElementById('communitySubtitle');
+    if (sub) sub.textContent = 'Ideas from the community. Log in to upvote!';
   }
 });
 
