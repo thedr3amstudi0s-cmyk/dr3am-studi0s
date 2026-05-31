@@ -61,6 +61,31 @@ body { font-family:'Roboto',Arial,sans-serif; line-height:1.8; transition:backgr
 @keyframes drawPath { to { stroke-dashoffset:0; } }
 @keyframes fadeIn   { from{opacity:0;transform:scale(0.95);}to{opacity:1;transform:scale(1);} }
 
+#avatarContainer{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(50px,1fr));
+    gap:10px;
+}
+
+.avatar-btn{
+    font-size:1.5rem;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.avatar-btn.selected{
+    outline:3px solid #4a90e2;
+}
+
+.avatar-controls{
+    margin-top:15px;
+    display:flex;
+    gap:10px;
+    justify-content:center;
+}
+
 /* HEADER */
 header { position:relative; text-align:center; padding:80px 20px; box-shadow:0 0 25px rgba(0,0,0,0.15); }
 .logo-svg { width:150px; height:80px; margin:0 auto 15px; display:block; }
@@ -649,30 +674,48 @@ function handleOverlayClick(e,id) { if(e.target===document.getElementById(id)) c
 
 // ── AVITARS ──────────────────────────────────────────────────
 const avatars = [
-    '🎮','🕹️','👾','🚀','🧟','🎆','🌙','⚡','🔥','💎','🐉','🎯','😍','🏈','🏀','🏐',
-    '⚽','🎾','🏓','🥎','🏒','🥍','🏹','🎳','🎲','♟️','🧩','🎭','🎨','🎬',
-    '🎤','🎧','🎼','🎹','🥁','🎷','🎺','🎸','🪕','🎻','🎪','🎡','🎢','🎠',
-    '🚗','🏎️','🚓','🚑','🚒','✈️','🛸','🚁','🚂','🚤','⛵','🛶','🚜','🛵',
-    '🐺','🦊','🐻','🐼','🦁','🐯','🐸','🐵','🦅','🦉','🐍','🦖','🦕','🐙',
-    '🌟','⭐','✨','☄️','🌈','🌊','🌪️','❄️','☀️','🌤️','⛈️','🌋','🏔️','🌴',
-    '🍕','🍔','🌭','🍟','🌮','🌯','🍩','🍪','🎂','🍫','🍿','🥤','🧃','🍎',
-    '💰','💸','🏆','🥇','🎖️','👑','💍','🪙','🔮','🗡️','🛡️','🏹','⚔️','🧙',
-    '😎','🤩','🥳','😆','😂','🤣','😊','😁','😄','😜','🤖','👻','💀','☠️',
-    '❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💖','💘','💝','💕','💞',
-    '🔴','🟠','🟡','🟢','🔵','🟣','⚫','⚪','🟤','🔺','🔷','🔶','💠','⭐'
+    '🎮','🕹️','👾','🚀','🧟','🎆','🌙','⚡','🔥','💎',
+    '🐉','🎯','😍','🏈','🏀','🏐','⚽','🎾','🏓','🥎',
+    '🏒','🥍','🏹','🎳','🎲','♟️','🧩','🎭','🎨','🎬',
+    '🎤','🎧','🎼','🎹','🥁','🎷','🎺','🎸','🪕','🎻',
+    '🎪','🎡','🎢','🎠','🚗','🏎️','🚓','🚑','🚒','✈️',
+    '🛸','🚁','🚂','🚤','⛵','🛶','🚜','🛵','🐺','🦊',
+    '🐻','🐼','🦁','🐯','🐸','🐵','🦅','🦉','🐍','🦖',
+    '🦕','🐙','🌟','⭐','✨','☄️','🌈','🌊','🌪️','❄️',
+    '☀️','🌤️','⛈️','🌋','🏔️','🌴'
 ];
 
 let visibleCount = 20;
+let selectedAvatar = null;
 
-function renderAvatars() {
+function buildAvatarGrid() {
     const container = document.getElementById('avatarContainer');
+    if (!container) return;
 
-    container.innerHTML = avatars
-        .slice(0, visibleCount)
-        .map(avatar => `
-            <button class="avatar-btn">${avatar}</button>
-        `)
-        .join('');
+    container.innerHTML = '';
+
+    avatars.slice(0, visibleCount).forEach(avatar => {
+        const btn = document.createElement('button');
+
+        btn.className = 'avatar-btn';
+        btn.textContent = avatar;
+
+        if (avatar === selectedAvatar) {
+            btn.classList.add('selected');
+        }
+
+        btn.onclick = () => {
+            selectedAvatar = avatar;
+            saveAvatar(avatar);
+
+            document.querySelectorAll('.avatar-btn')
+                .forEach(b => b.classList.remove('selected'));
+
+            btn.classList.add('selected');
+        };
+
+        container.appendChild(btn);
+    });
 
     document.getElementById('showMore').style.display =
         visibleCount >= avatars.length ? 'none' : 'inline-block';
@@ -683,15 +726,13 @@ function renderAvatars() {
 
 document.getElementById('showMore').addEventListener('click', () => {
     visibleCount = Math.min(visibleCount + 20, avatars.length);
-    renderAvatars();
+    buildAvatarGrid();
 });
 
 document.getElementById('showLess').addEventListener('click', () => {
     visibleCount = Math.max(visibleCount - 20, 20);
-    renderAvatars();
+    buildAvatarGrid();
 });
-
-renderAvatars();
 
 // ── DARK MODE ─────────────────────────────────────────────────
 function applyDark(on) {
