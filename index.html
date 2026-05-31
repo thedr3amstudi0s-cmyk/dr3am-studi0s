@@ -145,6 +145,7 @@ footer { background:#1f1f1f; color:white; }
 .pin-badge { display:inline-flex; align-items:center; gap:4px; background:#eef5ff; color:#4a90e2; font-size:0.75rem; font-weight:600; padding:3px 10px; border-radius:20px; margin-bottom:8px; }
 .idea-author { font-weight:600; font-size:0.97rem; color:#333; margin-bottom:2px; }
 .idea-author .owner-tag { font-size:0.72rem; background:#9146FF; color:white; padding:2px 7px; border-radius:10px; margin-left:6px; vertical-align:middle; }
+.idea-author .admin-tag { font-size:0.72rem; background:#9146FF; color:white; padding:2px 7px; border-radius:10px; margin-left:6px; vertical-align:middle; }
 .idea-text { font-size:0.93rem; color:#555; line-height:1.6; margin:6px 0 12px; }
 .idea-time { font-size:0.78rem; color:#bbb; margin-bottom:10px; }
 .idea-actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
@@ -1086,6 +1087,7 @@ async function submitIdea() {
 let ideasUnsubscribe = null;
 let pendingIdeaDelete = null;
 const OWNER_UID = '4pkmNhMUE7Mh2cGU6ukJqDpvaRs1';
+const ADMIN_UID = 'ZM9Wg6LjAbfNZPZAuWKsOUFYSzX2';
 
 function startIdeasListener() {
   if (ideasUnsubscribe) ideasUnsubscribe();
@@ -1132,7 +1134,7 @@ function renderIdeasFromSnapshot(snap) {
   docs.forEach(doc => {
     const item = { id: doc.id, ...doc.data() };
     const isOwner   = user && user.uid === item.uid;
-    const isAdmin   = user && user.uid === OWNER_UID;
+    const isAdmin   = user && user.uid === OWNER_UID || ADMIN_UID;
     const voted     = currentUserVotes.includes(item.id);
     const hasReported = (item.reportedBy || []).includes(user ? user.uid : '');
 
@@ -1149,6 +1151,10 @@ function renderIdeasFromSnapshot(snap) {
 
     const ownerTag = item.uid === OWNER_UID
       ? '<span class="owner-tag">👑 Owner</span>'
+      : '';
+
+    const adminTag = item.uid === ADMIN_UID
+      ? '<span class="admin-tag">✅ Admin</span>'
       : '';
 
     // Avatar: emoji > letter
@@ -1246,7 +1252,7 @@ async function reportIdea(ideaId) {
 // ── PIN IDEA (admin only) ─────────────────────────────────────
 async function togglePin(ideaId, isPinned) {
   const user = auth.currentUser;
-  if (!user || user.uid !== OWNER_UID) return;
+  if (!user || user.uid !== OWNER_UID || ADMIN_UID) return;
   try {
     await db.collection('ideas').doc(ideaId).update({ pinned: !isPinned });
   } catch(e) { console.error(e); }
