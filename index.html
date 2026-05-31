@@ -138,6 +138,29 @@ section h2 { text-align:center; font-size:2.4rem; margin-bottom:25px; color:#4a9
 footer { background:#1f1f1f; color:white; }
 .footer-bar { max-width:1200px; margin:auto; padding:30px; display:flex; justify-content:space-between; font-size:0.95rem; }
 
+/* IDEA CARDS */
+.idea-card { background:white; width:320px; padding:24px; border-radius:18px; text-align:left; box-shadow:0 10px 28px rgba(0,0,0,0.1); transition:0.3s; position:relative; }
+.idea-card:hover { transform:translateY(-6px); box-shadow:0 16px 36px rgba(0,0,0,0.16); }
+.idea-card.pinned { border:2px solid #4a90e2; }
+.pin-badge { display:inline-flex; align-items:center; gap:4px; background:#eef5ff; color:#4a90e2; font-size:0.75rem; font-weight:600; padding:3px 10px; border-radius:20px; margin-bottom:8px; }
+.idea-author { font-weight:600; font-size:0.97rem; color:#333; margin-bottom:2px; }
+.idea-author .owner-tag { font-size:0.72rem; background:#9146FF; color:white; padding:2px 7px; border-radius:10px; margin-left:6px; vertical-align:middle; }
+.idea-text { font-size:0.93rem; color:#555; line-height:1.6; margin:6px 0 12px; }
+.idea-time { font-size:0.78rem; color:#bbb; margin-bottom:10px; }
+.idea-actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.idea-delete-btn { position:absolute; top:12px; right:12px; background:none; border:none; cursor:pointer; color:#ccc; font-size:1.1rem; line-height:1; transition:0.2s; }
+.idea-delete-btn:hover { color:#e74c3c; }
+.report-btn { background:none; border:1px solid #eee; border-radius:14px; padding:3px 11px; font-size:0.78rem; color:#bbb; cursor:pointer; transition:0.2s; }
+.report-btn:hover { border-color:#e74c3c; color:#e74c3c; }
+.report-btn.reported { border-color:#f0a500; color:#f0a500; cursor:default; }
+.pin-btn { background:none; border:1px solid #d0e4ff; border-radius:14px; padding:3px 11px; font-size:0.78rem; color:#4a90e2; cursor:pointer; transition:0.2s; }
+.pin-btn:hover { background:#eef5ff; }
+body.dark .idea-card { background:#1b1b1b; }
+body.dark .idea-author { color:#ddd; }
+body.dark .idea-text { color:#aaa; }
+body.dark .report-btn { border-color:#333; color:#666; }
+body.dark .pin-badge { background:#1a2a3a; }
+
 /* MEMBER COUNTER */
 .member-counter { display:flex; justify-content:center; margin-bottom:30px; }
 .counter-box { background:white; border-radius:18px; padding:22px 40px; text-align:center; box-shadow:0 8px 28px rgba(74,144,226,0.15); border:1px solid #d0e4ff; }
@@ -216,6 +239,18 @@ body.dark .s-label { color:#666; }
     <div class="confirm-btns">
       <button class="btn-grey" onclick="closeOverlay('confirmDelete')">Cancel</button>
       <button class="btn-red"  onclick="confirmDeleteAccount()">Delete Forever</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE IDEA CONFIRM -->
+<div class="overlay" id="confirmIdeaDelete">
+  <div class="dialog" style="max-width:340px;text-align:center;">
+    <h3 style="color:#e74c3c;margin-bottom:10px;font-size:1.2rem;">Delete Post?</h3>
+    <p style="color:#666;font-size:0.93rem;">This comment will be deleted forever and cannot be recovered.</p>
+    <div class="confirm-btns">
+      <button class="btn-grey" onclick="closeOverlay('confirmIdeaDelete')">Cancel</button>
+      <button class="btn-red"  onclick="executeIdeaDelete()">Delete Forever</button>
     </div>
   </div>
 </div>
@@ -467,12 +502,19 @@ body.dark .s-label { color:#666; }
 <!-- IDEAS -->
 <section id="ideas">
   <h2>Share Your Ideas</h2>
-  <form class="idea-form" action="https://formspree.io/f/mjgbedkv" method="POST" onsubmit="recordIdea(event)">
-    <input type="text"  name="name"     id="ideaName"  placeholder="Your Name"  required>
-    <input type="email" name="_replyto" id="ideaEmail" placeholder="Your Email" required>
-    <textarea name="idea" id="ideaText" placeholder="Your Idea" required style="padding:14px;border-radius:10px;border:1px solid #ccc;font-size:0.95rem;font-family:inherit;min-height:120px;"></textarea>
-    <button type="submit">Send</button>
-  </form>
+  <div id="ideaFormWrap" style="max-width:650px;margin:auto;">
+    <p id="ideaLoginNotice" style="text-align:center;color:#888;display:none;">
+      <a href="#" onclick="openAuthModal('login');return false;" style="color:#4a90e2;">Log in</a> or
+      <a href="#" onclick="openAuthModal('signup');return false;" style="color:#4a90e2;">sign up</a> to share an idea.
+    </p>
+    <div id="ideaFormInner" style="display:none;flex-direction:column;gap:14px;">
+      <textarea id="ideaText" placeholder="Share your idea or feedback..." style="padding:14px;border-radius:10px;border:1px solid #ccc;font-size:0.95rem;font-family:inherit;min-height:110px;width:100%;box-sizing:border-box;resize:vertical;"></textarea>
+      <div style="display:flex;justify-content:flex-end;">
+        <button onclick="submitIdea()" style="padding:12px 28px;background:#4a90e2;color:white;border:none;border-radius:10px;cursor:pointer;font-weight:500;font-size:0.95rem;">Post</button>
+      </div>
+      <p id="ideaPostStatus" style="text-align:center;font-size:0.88rem;color:#4a90e2;min-height:18px;"></p>
+    </div>
+  </div>
 </section>
 
 <div class="divider"></div>
@@ -524,8 +566,9 @@ body.dark .s-label { color:#666; }
 <!-- COMMUNITY IDEAS -->
 <section id="community-ideas">
   <h2>Community Ideas/Comments</h2>
-  <p style="text-align:center;margin-bottom:20px;color:#555;" id="communitySubtitle">Ideas from the community. Log in to upvote!</p>
-  <div class="games" id="communityIdeas"></div>
+  <p style="text-align:center;margin-bottom:20px;color:#555;" id="communitySubtitle">Ideas from the community. Log in to post &amp; upvote!</p>
+  <div id="communityIdeas" style="display:flex;flex-wrap:wrap;justify-content:center;gap:30px;"></div>
+  <p id="communityEmpty" style="text-align:center;color:#bbb;margin-top:20px;display:none;">No posts yet — be the first!</p>
 </section>
 
 <div class="divider"></div>
@@ -691,10 +734,11 @@ auth.onAuthStateChanged(async (user) => {
     if(data.avatar) markAvatar(data.avatar);
     renderFeedbackHistory(data.feedbackHistory||[]);
     currentUserVotes = data.upvotes || [];
-    loadCommunityIdeas();
     sec.style.display='block';
     const sub = document.getElementById('communitySubtitle');
     if (sub) sub.textContent = 'Ideas from the community. Click ▲ to upvote!';
+    updateIdeaFormUI(user);
+    startIdeasListener();
   } else {
     bar.innerHTML=`
       <button class="tb-btn tb-btn-login"  onclick="openAuthModal('login')">Log In</button>
@@ -702,9 +746,10 @@ auth.onAuthStateChanged(async (user) => {
     `;
     sec.style.display='none';
     currentUserVotes = [];
-    loadCommunityIdeas();
     const sub = document.getElementById('communitySubtitle');
-    if (sub) sub.textContent = 'Ideas from the community. Log in to upvote!';
+    if (sub) sub.textContent = 'Ideas from the community. Log in to post & upvote!';
+    updateIdeaFormUI(null);
+    startIdeasListener();
   }
 });
 
@@ -747,7 +792,9 @@ async function handleAuth() {
   errEl.textContent = '';
 
   if (!email || !password) { errEl.textContent = 'Please fill in both fields.'; return; }
-  if (password.length < 6)  { errEl.textContent = 'Password must be at least 6 characters.'; return; }
+  if (currentMode === 'signup' && password.length < 6) {
+    errEl.textContent = 'Password must be at least 6 characters.'; return;
+  }
 
   const btn = document.getElementById('authSubmitBtn');
   btn.textContent = 'Please wait...'; btn.disabled = true;
@@ -925,79 +972,242 @@ function renderFeedbackHistory(history) {
       <small style="color:#bbb;">${h.date}</small>
     </div>`).join('');
 }
-function recordIdea(e) {
-  const user=auth.currentUser;
-  const idea=document.getElementById('ideaText').value.trim();
-  if(user&&idea){
-    const date=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-    db.collection('users').doc(user.uid).update({
-      feedbackHistory:firebase.firestore.FieldValue.arrayUnion({idea,date})
-    }).catch(()=>{});
+// ── IDEA FORM VISIBILITY ─────────────────────────────────────
+function updateIdeaFormUI(user) {
+  const notice = document.getElementById('ideaLoginNotice');
+  const inner  = document.getElementById('ideaFormInner');
+  if (!notice || !inner) return;
+  if (user) {
+    notice.style.display = 'none';
+    inner.style.display  = 'flex';
+  } else {
+    notice.style.display = 'block';
+    inner.style.display  = 'none';
   }
 }
 
-// ── MEMBER COUNTER ────────────────────────────────────────────
-// Listens in real-time so the number updates live on the page
-db.collection('stats').doc('site').onSnapshot(snap => {
-  const count = snap.exists ? (snap.data().memberCount || 0) : 0;
-  const el = document.getElementById('memberCount');
-  if (el) el.textContent = count.toLocaleString();
-});
+// ── SUBMIT IDEA TO FIRESTORE + EMAIL NOTIFICATION ─────────────
+async function submitIdea() {
+  const user = auth.currentUser;
+  if (!user) { openAuthModal('login'); return; }
 
-// ── COMMUNITY IDEAS (Firestore-backed) ────────────────────────
-// Ideas are stored in Firestore: ideas/{ideaId}
-// Each doc: { username, idea, upvotes: number }
-// User votes stored per-user: users/{uid}.upvotes = [ideaId, ...]
+  const text = document.getElementById('ideaText').value.trim();
+  if (!text) return;
 
-let currentUserVotes = []; // populated on login
+  const statusEl = document.getElementById('ideaPostStatus');
+  statusEl.textContent = 'Posting...';
 
-async function loadCommunityIdeas() {
   try {
-    const snap = await db.collection('ideas').orderBy('upvotes','desc').get();
-    if (snap.empty) {
-      // First run — seed the default ideas into Firestore
-      const defaults = [
-        { id:'idea_001', username:'Libbylobster', idea:"I am a big fan of this website! I got way into the firework simulator and I'm excited to try the zombie game when it drops! Keep making cool games :)", upvotes:3 },
-        { id:'idea_002', username:'Community Member', idea:'Maybe add a leaderboard to Firework Simulator so we can compete with friends!', upvotes:1 },
-      ];
-      for (const d of defaults) {
-        await db.collection('ideas').doc(d.id).set({ username:d.username, idea:d.idea, upvotes:d.upvotes });
-      }
-      renderIdeasFromDocs(defaults, currentUserVotes);
-    } else {
-      const ideas = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-      renderIdeasFromDocs(ideas, currentUserVotes);
-    }
-  } catch(e) { console.error('Error loading ideas:', e); }
+    // Get display name
+    let displayName = user.email.split('@')[0];
+    try {
+      const snap = await db.collection('users').doc(user.uid).get();
+      if (snap.exists && snap.data().displayName) displayName = snap.data().displayName;
+    } catch(e) {}
+
+    // Write to Firestore — auto-published immediately
+    const ideaRef = await db.collection('ideas').add({
+      uid:         user.uid,
+      username:    displayName,
+      idea:        text,
+      upvotes:     0,
+      pinned:      false,
+      reported:    false,
+      reportCount: 0,
+      createdAt:   firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    // Also save to user's feedback history
+    db.collection('users').doc(user.uid).update({
+      feedbackHistory: firebase.firestore.FieldValue.arrayUnion({
+        idea: text,
+        date: new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+      })
+    }).catch(() => {});
+
+    // Email notification via Formspree (no-redirect fetch)
+    fetch('https://formspree.io/f/mjgbedkv', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        _replyto: user.email,
+        subject:  'New DR3AM STUDI0S Community Post',
+        message:  'New post from ' + displayName + ' (' + user.email + '):
+
+"' + text + '"
+
+Post ID: ' + ideaRef.id
+      })
+    }).catch(() => {}); // silent — email is bonus, not critical
+
+    document.getElementById('ideaText').value = '';
+    statusEl.textContent = '✓ Posted!';
+    setTimeout(() => { statusEl.textContent = ''; }, 3000);
+
+  } catch(e) {
+    console.error(e);
+    statusEl.textContent = 'Error posting. Try again.';
+  }
 }
 
-function renderIdeasFromDocs(ideas, userVotes) {
+// ── REAL-TIME COMMUNITY IDEAS LISTENER ───────────────────────
+let ideasUnsubscribe = null;
+let pendingIdeaDelete = null;
+const OWNER_UID = '4pkmNhMUE7Mh2cGU6ukJqDpvaRs1';
+
+function startIdeasListener() {
+  // Unsubscribe any previous listener
+  if (ideasUnsubscribe) ideasUnsubscribe();
+
+  ideasUnsubscribe = db.collection('ideas')
+    .orderBy('pinned', 'desc')
+    .orderBy('createdAt', 'desc')
+    .onSnapshot(snap => {
+      renderIdeasFromSnapshot(snap);
+    }, err => console.error('Ideas listener error:', err));
+}
+
+function renderIdeasFromSnapshot(snap) {
   const c = document.getElementById('communityIdeas');
+  const empty = document.getElementById('communityEmpty');
+  if (!c) return;
   c.innerHTML = '';
-  ideas.forEach(item => {
-    const voted = userVotes.includes(item.id);
+
+  const user = auth.currentUser;
+  const docs = snap.docs;
+
+  if (docs.length === 0) {
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+
+  docs.forEach(doc => {
+    const item = { id: doc.id, ...doc.data() };
+    const isOwner   = user && user.uid === item.uid;
+    const isAdmin   = user && user.uid === OWNER_UID;
+    const voted     = currentUserVotes.includes(item.id);
+    const hasReported = (item.reportedBy || []).includes(user ? user.uid : '');
+
+    // Format time
+    let timeStr = '';
+    if (item.createdAt && item.createdAt.toDate) {
+      const d = item.createdAt.toDate();
+      timeStr = d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    }
+
     const card = document.createElement('div');
-    card.className = 'card';
+    card.className = 'idea-card' + (item.pinned ? ' pinned' : '');
+    card.id = 'idea-card-' + item.id;
+
+    const ownerTag = item.uid === OWNER_UID
+      ? '<span class="owner-tag">👑 Owner</span>'
+      : '';
+
+    const pinBadge = item.pinned
+      ? '<div class="pin-badge">📌 Pinned</div>'
+      : '';
+
+    const pinBtn = isAdmin
+      ? `<button class="pin-btn" onclick="togglePin('${item.id}',${item.pinned})">${item.pinned ? 'Unpin' : '📌 Pin'}</button>`
+      : '';
+
+    const deleteBtn = (isOwner || isAdmin)
+      ? `<button class="idea-delete-btn" title="Delete post" onclick="confirmIdeaDelete('${item.id}')">✕</button>`
+      : '';
+
+    const reportBtn = !isOwner
+      ? `<button class="report-btn ${hasReported ? 'reported' : ''}" id="report-${item.id}"
+           onclick="reportIdea('${item.id}')">${hasReported ? '⚑ Reported' : '⚑ Report'}</button>`
+      : '';
+
     card.innerHTML = `
-      <strong>${item.username}</strong>
-      <p>${item.idea}</p>
-      <button class="upvote-btn ${voted?'voted':''}" id="upvote-${item.id}" onclick="toggleUpvote('${item.id}',${voted})">
-        ▲ <span id="upcount-${item.id}">${item.upvotes}</span>
-      </button>`;
+      ${deleteBtn}
+      ${pinBadge}
+      <div class="idea-author">${item.username}${ownerTag}</div>
+      <div class="idea-time">${timeStr}</div>
+      <p class="idea-text">${item.idea}</p>
+      <div class="idea-actions">
+        <button class="upvote-btn ${voted ? 'voted' : ''}" id="upvote-${item.id}"
+          onclick="toggleUpvote('${item.id}',${voted})">
+          ▲ <span id="upcount-${item.id}">${item.upvotes || 0}</span>
+        </button>
+        ${reportBtn}
+        ${pinBtn}
+      </div>`;
     c.appendChild(card);
   });
 }
+
+// ── DELETE IDEA ───────────────────────────────────────────────
+function confirmIdeaDelete(ideaId) {
+  pendingIdeaDelete = ideaId;
+  openOverlay('confirmIdeaDelete');
+}
+async function executeIdeaDelete() {
+  if (!pendingIdeaDelete) return;
+  const user = auth.currentUser;
+  if (!user) return;
+  try {
+    await db.collection('ideas').doc(pendingIdeaDelete).delete();
+    closeOverlay('confirmIdeaDelete');
+    pendingIdeaDelete = null;
+  } catch(e) {
+    alert('Could not delete. Check your connection.');
+    console.error(e);
+  }
+}
+
+// ── REPORT IDEA ───────────────────────────────────────────────
+async function reportIdea(ideaId) {
+  const user = auth.currentUser;
+  if (!user) { openAuthModal('login'); return; }
+
+  const btn = document.getElementById('report-' + ideaId);
+  if (btn && btn.classList.contains('reported')) return; // already reported
+
+  try {
+    await db.collection('ideas').doc(ideaId).update({
+      reportCount: firebase.firestore.FieldValue.increment(1),
+      reported:    true,
+      reportedBy:  firebase.firestore.FieldValue.arrayUnion(user.uid)
+    });
+    if (btn) { btn.classList.add('reported'); btn.textContent = '⚑ Reported'; }
+
+    // Email you about the report
+    fetch('https://formspree.io/f/mjgbedkv', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        subject: '⚑ DR3AM STUDI0S - Post Reported',
+        message: 'Post ID ' + ideaId + ' was reported by ' + user.email + '. Review it in your Firebase console.'
+      })
+    }).catch(() => {});
+  } catch(e) { console.error(e); }
+}
+
+// ── PIN IDEA (admin only) ─────────────────────────────────────
+async function togglePin(ideaId, isPinned) {
+  const user = auth.currentUser;
+  if (!user || user.uid !== OWNER_UID) return;
+  try {
+    await db.collection('ideas').doc(ideaId).update({ pinned: !isPinned });
+  } catch(e) { console.error(e); }
+}
+
+// ── UPVOTE ────────────────────────────────────────────────────
+let currentUserVotes = [];
 
 async function toggleUpvote(ideaId, hasVoted) {
   const user = auth.currentUser;
   if (!user) { openAuthModal('login'); return; }
 
-  const btn = document.getElementById('upvote-'+ideaId);
-  const cnt = document.getElementById('upcount-'+ideaId);
+  const btn = document.getElementById('upvote-' + ideaId);
+  const cnt = document.getElementById('upcount-' + ideaId);
   if (!btn || !cnt) return;
 
-  // Optimistic UI update
   const current = parseInt(cnt.textContent) || 0;
+  // Optimistic update
   if (hasVoted) {
     btn.classList.remove('voted');
     cnt.textContent = current - 1;
@@ -1009,32 +1219,24 @@ async function toggleUpvote(ideaId, hasVoted) {
   }
   btn.onclick = () => toggleUpvote(ideaId, !hasVoted);
 
-  // Write to Firestore atomically
-  const ideaRef = db.collection('ideas').doc(ideaId);
-  const userRef = db.collection('users').doc(user.uid);
-  const delta   = hasVoted ? -1 : 1;
-
   try {
-    await ideaRef.update({
-      upvotes: firebase.firestore.FieldValue.increment(delta)
+    await db.collection('ideas').doc(ideaId).update({
+      upvotes: firebase.firestore.FieldValue.increment(hasVoted ? -1 : 1)
     });
-    if (hasVoted) {
-      await userRef.update({ upvotes: firebase.firestore.FieldValue.arrayRemove(ideaId) });
-    } else {
-      await userRef.update({ upvotes: firebase.firestore.FieldValue.arrayUnion(ideaId) });
-    }
+    const userRef = db.collection('users').doc(user.uid);
+    if (hasVoted) await userRef.update({ upvotes: firebase.firestore.FieldValue.arrayRemove(ideaId) });
+    else          await userRef.update({ upvotes: firebase.firestore.FieldValue.arrayUnion(ideaId) });
   } catch(e) {
-    console.error('Upvote error:', e);
-    // Revert UI if Firestore write failed
+    // Revert on failure
     cnt.textContent = current;
     if (hasVoted) { btn.classList.add('voted'); currentUserVotes.push(ideaId); }
-    else          { btn.classList.remove('voted'); currentUserVotes = currentUserVotes.filter(id=>id!==ideaId); }
+    else          { btn.classList.remove('voted'); currentUserVotes = currentUserVotes.filter(id => id !== ideaId); }
     btn.onclick = () => toggleUpvote(ideaId, hasVoted);
   }
 }
 
-// Load ideas on page start
-loadCommunityIdeas();
+// Start listening immediately on page load
+startIdeasListener();
 
 // ── SIGN OUT ──────────────────────────────────────────────────
 async function confirmSignOut() { closeOverlay('confirmLogout'); await auth.signOut(); }
