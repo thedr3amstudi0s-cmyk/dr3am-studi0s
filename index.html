@@ -740,46 +740,76 @@ function switchForm(mode) {
   document.getElementById('btnLogin').classList.toggle('active',!s);
 }
 async function handleAuth() {
-  const email=document.getElementById('authEmail').value.trim();
-  const password=document.getElementById('authPassword').value;
-  const name=document.getElementById('authDisplayName').value.trim();
-  const errEl=document.getElementById('authError');
-  errEl.textContent='';
-  if(!email||!password){errEl.textContent='Please fill in both fields.';return;}
-  const btn=document.getElementById('authSubmitBtn');
-  btn.textContent='Please wait...'; btn.disabled=true;
+  const email    = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const name     = document.getElementById('authDisplayName').value.trim();
+  const errEl    = document.getElementById('authError');
+  errEl.textContent = '';
+
+  if (!email || !password) { errEl.textContent = 'Please fill in both fields.'; return; }
+  if (password.length < 6)  { errEl.textContent = 'Password must be at least 6 characters.'; return; }
+
+  const btn = document.getElementById('authSubmitBtn');
+  btn.textContent = 'Please wait...'; btn.disabled = true;
+
   try {
-    if(currentMode==='signup'){
-      const cred=await auth.createUserWithEmailAndPassword(email,password);
-      const wantsNewsletter=document.getElementById('newsletterSignup').checked;
-      await db.collection('users').doc(cred.user.uid).set({
-        newsletter:wantsNewsletter, notif_releases:false, earlyAccess:false,
-        dark_mode:localStorage.dark==='1', displayName:name, avatar:'',
-        favoriteGame:'', twitch:'', discord:'', feedbackHistory:[],
-        createdAt:firebase.firestore.FieldValue.serverTimestamp()
-      });
-      if(wantsNewsletter) await db.collection('emails_collection').doc(cred.user.uid).set({email});
-      // Increment the global member counter
-      await db.collection('stats').doc('site').set(
-        { memberCount: firebase.firestore.FieldValue.increment(1) },
-        { merge: true }
-      );
+    if (currentMode === 'signup') {
+
+      // Step 1: Create the Firebase Auth account
+      const cred = await auth.createUserWithEmailAndPassword(email, password);
+      const wantsNewsletter = document.getElementById('newsletterSignup').checked;
+
+      // Step 2: Write Firestore data — wrapped separately so a
+      // Firestore failure doesn't block the user from being logged in
+      try {
+        await db.collection('users').doc(cred.user.uid).set({
+          newsletter:      wantsNewsletter,
+          notif_releases:  false,
+          earlyAccess:     false,
+          dark_mode:       localStorage.dark === '1',
+          displayName:     name,
+          avatar:          '',
+          favoriteGame:    '',
+          twitch:          '',
+          discord:         '',
+          feedbackHistory: [],
+          upvotes:         [],
+          createdAt:       firebase.firestore.FieldValue.serverTimestamp()
+        });
+        if (wantsNewsletter) {
+          await db.collection('emails_collection').doc(cred.user.uid).set({ email });
+        }
+        await db.collection('stats').doc('site').set(
+          { memberCount: firebase.firestore.FieldValue.increment(1) },
+          { merge: true }
+        );
+      } catch (fsErr) {
+        // Firestore failed but auth succeeded — user is logged in,
+        // just log the error silently rather than showing a fake failure
+        console.warn('Firestore write failed after signup (check your security rules):', fsErr.code, fsErr.message);
+      }
+
     } else {
-      await auth.signInWithEmailAndPassword(email,password);
+      await auth.signInWithEmailAndPassword(email, password);
     }
+
     closeOverlay('authOverlay');
-  } catch(err) {
-    const msgs={
-      'auth/email-already-in-use':'That email is already registered. Try logging in.',
-      'auth/invalid-email':'Please enter a valid email address.',
-      'auth/weak-password':'Password must be at least 6 characters.',
-      'auth/wrong-password':'Incorrect password.',
-      'auth/user-not-found':'No account found with that email.',
-      'auth/too-many-requests':'Too many attempts. Please wait.',
-      'auth/invalid-credential':'Incorrect email or password.'
+
+  } catch (err) {
+    // Only auth errors reach here
+    const msgs = {
+      'auth/email-already-in-use': 'That email is already registered. Try logging in.',
+      'auth/invalid-email':        'Please enter a valid email address.',
+      'auth/weak-password':        'Password must be at least 6 characters.',
+      'auth/wrong-password':       'Incorrect password.',
+      'auth/user-not-found':       'No account found with that email.',
+      'auth/too-many-requests':    'Too many attempts — please wait a moment.',
+      'auth/invalid-credential':   'Incorrect email or password.',
+      'auth/network-request-failed': 'Network error — check your connection.',
     };
-    errEl.textContent=msgs[err.code]||'Something went wrong. Please try again.';
-    btn.textContent=currentMode==='signup'?'Create Account':'Log In'; btn.disabled=false;
+    errEl.textContent = msgs[err.code] || `Error: ${err.message}`;
+    btn.textContent = currentMode === 'signup' ? 'Create Account' : 'Log In';
+    btn.disabled = false;
   }
 }
 
