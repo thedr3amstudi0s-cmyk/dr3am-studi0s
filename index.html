@@ -973,6 +973,25 @@ function renderFeedbackHistory(history) {
       <small style="color:#bbb;">${h.date}</small>
     </div>`).join('');
 }
+// ── MEMBER COUNTER ────────────────────────────────────────────
+db.collection('stats').doc('site').onSnapshot(async snap => {
+  const el = document.getElementById('memberCount');
+  if (!el) return;
+  if (!snap.exists) {
+    // First time — count all existing user docs and seed the counter
+    try {
+      const usersSnap = await db.collection('users').get();
+      const count = usersSnap.size;
+      await db.collection('stats').doc('site').set({ memberCount: count }, { merge: true });
+      el.textContent = count.toLocaleString();
+    } catch(e) {
+      el.textContent = '0';
+    }
+  } else {
+    el.textContent = (snap.data().memberCount || 0).toLocaleString();
+  }
+});
+
 // ── IDEA FORM VISIBILITY ─────────────────────────────────────
 function updateIdeaFormUI(user) {
   const notice = document.getElementById('ideaLoginNotice');
