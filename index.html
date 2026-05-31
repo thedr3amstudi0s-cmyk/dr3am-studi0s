@@ -297,7 +297,7 @@ body.dark .s-label { color:#666; }
             <p id="settingsEmail">—</p>
             <small>Your login email</small>
           </div>
-          <button class="s-btn s-btn-warn" id="emailToggleBtn" onclick="toggleEmailVisibility()">Hide</button>
+          <button class="s-btn s-btn-warn" id="emailToggleBtn" onclick="toggleEmailVisibility()">Show</button>
         </div>
       </div>
     </div>
@@ -326,58 +326,47 @@ body.dark .s-label { color:#666; }
         </div>
       </div>
     </div>
-    
+
     <!-- NOTIFICATIONS -->
     <div class="settings-body" id="tab-notifs" style="display:none;">
       <div class="s-group">
         <div class="s-label">Email Notifications</div>
-    
         <div class="s-row">
           <div class="s-row-info">
             <p>Weekly Newsletter</p>
             <small>Game updates, dev notes & community highlights</small>
           </div>
           <label class="toggle-switch">
-            <input type="checkbox"
-                   id="newsletterToggle"
-                   onchange="updatePref('newsletter', this.checked)">
+            <input type="checkbox" id="newsletterToggle" onchange="updatePref('newsletter',this.checked)">
             <span class="t-slider" id="ts-newsletter"></span>
-            <span class="t-dot" id="td-newsletter"></span>
+            <span class="t-dot"    id="td-newsletter"></span>
           </label>
         </div>
-    
         <div class="s-row">
           <div class="s-row-info">
             <p>New Game Releases</p>
             <small>Be first to know when a new game drops</small>
           </div>
           <label class="toggle-switch">
-            <input type="checkbox"
-                   id="releasesToggle"
-                   onchange="updatePref('notif_releases', this.checked)">
+            <input type="checkbox" id="releasesToggle" onchange="updatePref('notif_releases',this.checked)">
             <span class="t-slider" id="ts-notif_releases"></span>
-            <span class="t-dot" id="td-notif_releases"></span>
+            <span class="t-dot"    id="td-notif_releases"></span>
           </label>
         </div>
-    
         <div class="s-row">
           <div class="s-row-info">
             <p>Early Access Opt-In</p>
             <small>Get invited to test games before public release</small>
           </div>
           <label class="toggle-switch">
-            <input type="checkbox"
-                   id="earlyAccessToggle"
-                   onchange="updateEarlyAccess(this.checked)">
+            <input type="checkbox" id="earlyAccessToggle" onchange="updateEarlyAccess(this.checked)">
             <span class="t-slider" id="ts-earlyAccess"></span>
-            <span class="t-dot" id="td-earlyAccess"></span>
+            <span class="t-dot"    id="td-earlyAccess"></span>
           </label>
         </div>
-    
         <p class="s-status" id="notifStatus"></p>
       </div>
     </div>
-
 
     <!-- PREFERENCES -->
     <div class="settings-body" id="tab-prefs" style="display:none;">
@@ -390,7 +379,8 @@ body.dark .s-label { color:#666; }
           </div>
           <label class="toggle-switch">
             <input type="checkbox" id="darkModeToggle" onchange="updateDarkMode(this.checked)">
-            <span class="t-slider" id="ts-dark_mode"></span><span class="t-dot" id="td-dark_mode"></span>
+            <span class="t-slider" id="ts-dark_mode"></span>
+            <span class="t-dot"    id="td-dark_mode"></span>
           </label>
         </div>
         <p class="s-status" id="prefStatus"></p>
@@ -564,6 +554,7 @@ function buildAvatarGrid() {
 function markAvatar(em) {
   document.querySelectorAll('.av-opt').forEach(b=>b.classList.toggle('selected',b.textContent===em));
 }
+
 // ── DARK MODE ─────────────────────────────────────────────────
 function applyDark(on) {
   document.body.classList.toggle('dark',on);
@@ -580,13 +571,12 @@ document.getElementById('darkToggle').onclick=()=>{
   if(user) db.collection('users').doc(user.uid).update({dark_mode:on}).catch(()=>{});
 };
 
-// ── TOGGLE HELPER ─────────────────────────────────────────────
-function setToggle(key, on) {
-  const s=document.getElementById('ts-'+key), d=document.getElementById('td-'+key);
-  const c=document.getElementById(key.replace(/_([a-z])/g,(m,p)=>p.toUpperCase())+'Toggle') || document.querySelector('[id$="'+key.replace('notif_','')+'Toggle"]');
-  if(s){ s.style.background=on?'#4a90e2':'#ccc'; }
-  if(d){ d.style.transform=on?'translateX(24px)':'translateX(0)'; }
-  if(c){ c.checked=on; }
+// ── TOGGLE VISUAL HELPER ──────────────────────────────────────
+function setToggleVisual(sliderId, dotId, checkboxId, on) {
+  const s=document.getElementById(sliderId), d=document.getElementById(dotId), c=document.getElementById(checkboxId);
+  if(s) s.style.background=on?'#4a90e2':'#ccc';
+  if(d) d.style.transform=on?'translateX(24px)':'translateX(0)';
+  if(c) c.checked=on;
 }
 
 // ── AUTH STATE ────────────────────────────────────────────────
@@ -609,43 +599,30 @@ auth.onAuthStateChanged(async (user) => {
       <button class="tb-btn tb-btn-logout" onclick="openOverlay('confirmLogout')">Log Out</button>
     `;
 
-    // Populate all fields
+    // Email — start hidden, show masked version
     actualEmail=user.email; emailVisible=false;
-    document.getElementById('settingsEmail').textContent=user.email;
-    document.getElementById('emailToggleBtn').textContent='Show';
+    const [u,domain]=user.email.split('@');
+    document.getElementById('settingsEmail').textContent = u.charAt(0)+'•••@'+domain;
+    document.getElementById('emailToggleBtn').textContent = 'Show';
+
+    // Other fields
     document.getElementById('displayNameInput').value=dn;
     document.getElementById('twitchInput').value=data.twitch||'';
     document.getElementById('discordInput').value=data.discord||'';
     const fg=document.getElementById('favoriteGame'); if(fg) fg.value=data.favoriteGame||'';
 
-    // Toggles — use exact field keys matching ts-/td- IDs
+    // Sync emails_collection on login to match newsletter preference
     const newsOn=data.newsletter??true;
-    // ── SYNC EMAILS COLLECTION ON LOGIN ──
-    const emailRef = db.collection('emails_collection').doc(user.uid);
-    
-    if (newsOn) {
-      // ensure email exists if subscribed
-      await emailRef.set({ email: user.email }).catch(()=>{});
-    } else {
-      // ensure it's removed if unsubscribed
-      await emailRef.delete().catch(()=>{});
-    }
-    const sl=document.getElementById('ts-newsletter'), dl=document.getElementById('td-newsletter'), cl=document.getElementById('newsletterToggle');
-    if(sl) sl.style.background=newsOn?'#4a90e2':'#ccc';
-    if(dl) dl.style.transform=newsOn?'translateX(24px)':'translateX(0)';
-    if(cl) cl.checked=newsOn;
+    const emailRef=db.collection('emails_collection').doc(user.uid);
+    if(newsOn) await emailRef.set({email:user.email}).catch(()=>{});
+    else       await emailRef.delete().catch(()=>{});
+    setToggleVisual('ts-newsletter','td-newsletter','newsletterToggle', newsOn);
 
     const relOn=data.notif_releases??false;
-    const sr=document.getElementById('ts-notif_releases'), dr=document.getElementById('td-notif_releases'), cr=document.getElementById('releasesToggle');
-    if(sr) sr.style.background=relOn?'#4a90e2':'#ccc';
-    if(dr) dr.style.transform=relOn?'translateX(24px)':'translateX(0)';
-    if(cr) cr.checked=relOn;
+    setToggleVisual('ts-notif_releases','td-notif_releases','releasesToggle', relOn);
 
     const eaOn=data.earlyAccess??false;
-    const se=document.getElementById('ts-earlyAccess'), de=document.getElementById('td-earlyAccess'), ce=document.getElementById('earlyAccessToggle');
-    if(se) se.style.background=eaOn?'#4a90e2':'#ccc';
-    if(de) de.style.transform=eaOn?'translateX(24px)':'translateX(0)';
-    if(ce) ce.checked=eaOn;
+    setToggleVisual('ts-earlyAccess','td-earlyAccess','earlyAccessToggle', eaOn);
 
     const dmOn=data.dark_mode??(localStorage.dark==='1');
     applyDark(dmOn); localStorage.dark=dmOn?'1':'0';
@@ -721,10 +698,15 @@ async function handleAuth() {
     }
     closeOverlay('authOverlay');
   } catch(err) {
-    const msgs={'auth/email-already-in-use':'That email is already registered. Try logging in.',
-      'auth/invalid-email':'Please enter a valid email address.','auth/weak-password':'Password must be at least 6 characters.',
-      'auth/wrong-password':'Incorrect password.','auth/user-not-found':'No account found with that email.',
-      'auth/too-many-requests':'Too many attempts. Please wait.','auth/invalid-credential':'Incorrect email or password.'};
+    const msgs={
+      'auth/email-already-in-use':'That email is already registered. Try logging in.',
+      'auth/invalid-email':'Please enter a valid email address.',
+      'auth/weak-password':'Password must be at least 6 characters.',
+      'auth/wrong-password':'Incorrect password.',
+      'auth/user-not-found':'No account found with that email.',
+      'auth/too-many-requests':'Too many attempts. Please wait.',
+      'auth/invalid-credential':'Incorrect email or password.'
+    };
     errEl.textContent=msgs[err.code]||'Something went wrong. Please try again.';
     btn.textContent=currentMode==='signup'?'Create Account':'Log In'; btn.disabled=false;
   }
@@ -756,8 +738,12 @@ async function saveFavoriteGame(val) {
 function toggleEmailVisibility() {
   emailVisible=!emailVisible;
   const el=document.getElementById('settingsEmail'), btn=document.getElementById('emailToggleBtn');
-  if(emailVisible){ el.textContent=actualEmail; btn.textContent='Hide'; }
-  else { const[u,d]=actualEmail.split('@'); el.textContent=u.charAt(0)+'•••@'+d; btn.textContent='Show'; }
+  if(emailVisible){
+    el.textContent=actualEmail; btn.textContent='Hide';
+  } else {
+    const[u,d]=actualEmail.split('@');
+    el.textContent=u.charAt(0)+'•••@'+d; btn.textContent='Show';
+  }
 }
 
 // ── ACCOUNT ───────────────────────────────────────────────────
@@ -784,97 +770,39 @@ async function confirmDeleteAccount() {
 
 // ── NOTIFICATIONS ─────────────────────────────────────────────
 async function updatePref(field, on) {
-  const user = auth.currentUser;
-  if (!user) return;
+  const user=auth.currentUser; if(!user)return;
 
-  // 🔥 INSTANT UI FEEDBACK (no refresh needed)
-  setToggle(field, on);
+  // Instant UI feedback
+  if(field==='newsletter')     setToggleVisual('ts-newsletter','td-newsletter','newsletterToggle',on);
+  if(field==='notif_releases') setToggleVisual('ts-notif_releases','td-notif_releases','releasesToggle',on);
 
-  const upd = {};
-  upd[field] = on;
+  const upd={}; upd[field]=on;
+  await db.collection('users').doc(user.uid).update(upd).catch(e=>console.error(e));
 
-  try {
-    await db.collection('users').doc(user.uid).update(upd);
-  } catch (e) {
-    console.error(e);
+  if(field==='newsletter'){
+    const ref=db.collection('emails_collection').doc(user.uid);
+    if(on) await ref.set({email:user.email}).catch(()=>{});
+    else   await ref.delete().catch(()=>{});
+    showStatus('notifStatus',on?'✓ Subscribed to newsletter!':'Unsubscribed from newsletter.');
   }
-
-  // EMAIL COLLECTION SYNC (instant too)
-  if (field === 'newsletter') {
-    const ref = db.collection('emails_collection').doc(user.uid);
-
-    try {
-      if (on) {
-        await ref.set({ email: user.email });
-      } else {
-        await ref.delete();
-      }
-    } catch (e) {
-      console.error(e);
-    }
-
-    showStatus(
-      'notifStatus',
-      on ? '✓ Subscribed to newsletter!' : 'Unsubscribed from newsletter.'
-    );
-  }
-
-  if (field === 'notif_releases') {
-    showStatus(
-      'notifStatus',
-      on ? '✓ Release notifications on!' : 'Release notifications off.'
-    );
+  if(field==='notif_releases'){
+    showStatus('notifStatus',on?'✓ Release notifications on!':'Release notifications off.');
   }
 }
 async function updateEarlyAccess(on) {
-  const user = auth.currentUser;
-  if (!user) return;
-
-  setToggle('earlyAccess', on);
-
-  try {
-    await db.collection('users').doc(user.uid).update({
-      earlyAccess: on
-    });
-  } catch (e) {
-    console.error(e);
-  }
-
-  const ref = db.collection('early_access').doc(user.uid);
-
-  try {
-    if (on) {
-      await ref.set({
-        email: user.email,
-        signedUp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-    } else {
-      await ref.delete();
-    }
-  } catch (e) {
-    console.error(e);
-  }
-
-  showStatus(
-    'notifStatus',
-    on
-      ? "✓ You're on the early access list!"
-      : 'Removed from early access list.'
-  );
+  const user=auth.currentUser; if(!user)return;
+  setToggleVisual('ts-earlyAccess','td-earlyAccess','earlyAccessToggle',on);
+  await db.collection('users').doc(user.uid).update({earlyAccess:on}).catch(()=>{});
+  const ref=db.collection('early_access').doc(user.uid);
+  if(on) await ref.set({email:user.email,signedUp:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>{});
+  else   await ref.delete().catch(()=>{});
+  showStatus('notifStatus',on?"✓ You're on the early access list!":'Removed from early access list.');
 }
 async function updateDarkMode(on) {
-  applyDark(on);
-  localStorage.dark = on ? '1' : '0';
-
-  const user = auth.currentUser;
-  if (user) {
-    db.collection('users')
-      .doc(user.uid)
-      .update({ dark_mode: on })
-      .catch(() => {});
-  }
-
-  showStatus('prefStatus', on ? '✓ Dark mode on.' : '✓ Dark mode off.');
+  applyDark(on); localStorage.dark=on?'1':'0';
+  const user=auth.currentUser;
+  if(user) await db.collection('users').doc(user.uid).update({dark_mode:on}).catch(()=>{});
+  showStatus('prefStatus',on?'✓ Dark mode on.':'✓ Dark mode off.');
 }
 
 // ── SOCIAL ────────────────────────────────────────────────────
@@ -970,15 +898,10 @@ function showStatus(id,msg){
 }
 document.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&document.getElementById('authOverlay').classList.contains('show')) handleAuth();
-  if(e.key==='Escape'){closeOverlay('authOverlay');closeOverlay('confirmLogout');closeOverlay('confirmDelete');closeGame();if(imageModal.style.display==='flex')imageModal.style.display='none';}
-});
-
-// ── HIDE ON START ─────────────────────────────────────────────
-window.addEventListener("load", () => {
-  emailVisible=false;
-  const el=document.getElementById('settingsEmail'), btn=document.getElementById('emailToggleBtn');
-  if(emailVisible){ el.textContent=actualEmail; btn.textContent='Hide'; }
-  else { const[u,d]=actualEmail.split('@'); el.textContent=u.charAt(0)+'•••@'+d; btn.textContent='Show'; }
+  if(e.key==='Escape'){
+    closeOverlay('authOverlay'); closeOverlay('confirmLogout'); closeOverlay('confirmDelete');
+    closeGame(); if(imageModal.style.display==='flex') imageModal.style.display='none';
+  }
 });
 </script>
 </body>
