@@ -652,12 +652,6 @@ const auth = firebase.auth();
 const db   = firebase.firestore();
 
 // ── BACKGROUND CATALOG ────────────────────────────────────────
-// To add a new background:
-//   1. Drop the image in your backgrounds/ folder
-//   2. Add an entry here: { id, file, name, code, hint }
-//   code   = the exact string users type to unlock it (case-insensitive)
-//   hint   = shown on the lock overlay, e.g. "Unlock from Firework Simulator"
-//   Set code to null for backgrounds unlocked by default (everyone has them)
 const BACKGROUNDS = [
   { id:'none',     file:null,                      name:'None',        code:null,       hint:'' },
   { id:'galaxy',   file:'backgrounds/galaxy.png',  name:'Galaxy',      code:'FIREWORK', hint:'Unlock from Firework Simulator' },
