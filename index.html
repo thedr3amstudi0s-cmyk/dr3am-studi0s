@@ -377,7 +377,7 @@ body.dark .bg-option .bg-name { background:rgba(0,0,0,0.7); }
           <option value="">-- Pick your favorite --</option>
           <option value="firework">Firework Simulator</option>
           <option value="habit">Habit Tracker</option>
-          <option value="experiment">The Experiment (coming soon!)</option>
+          <option value="experiment">Bubbles Carnival (a rebrand from the experiment) (In development!)</option>
         </select>
         <p class="s-status" id="favoriteStatus"></p>
       </div>
@@ -508,7 +508,7 @@ body.dark .bg-option .bg-name { background:rgba(0,0,0,0.7); }
   <p style="text-align:center;margin-bottom:20px;color:#555;">Click a game card to learn more.</p>
   <div class="games">
     <div class="card" onclick="openGame('experiment')">
-      <strong>The Experiment</strong> <em style="font-size:0.85rem;">(not released yet)</em>
+      <strong>Bubbles Carnival (a rebrand from the experiment)</strong> <em style="font-size:0.85rem;">(not released yet)</em>
       <p>A zombie survival game set in a mall where players must escape or find a cure while avoiding threats.</p>
     </div>
     <div class="card" onclick="openGame('firework')">
@@ -611,13 +611,13 @@ body.dark .bg-option .bg-name { background:rgba(0,0,0,0.7); }
   <div class="member-counter">
     <div class="counter-box">
       <div class="counter-num" id="memberCount">—</div>
-      <div class="counter-label">members have joined DR3AM STUDI0S</div>
+      <div class="counter-label">members have joined DR3AM STUDI0S , at 100 member I will do a $10 givaway if we get it before the 30th of june</div>
     </div>
   </div>
   <p class="about-text">
     DR3AM STUDI0S is the passion project of Dreamcrusher, a solo game developer who loves creating fun, competitive games and challenging puzzles. With a focus on exciting gameplay experiences, the studio's mission is to make games that are engaging, memorable, and just plain fun to play.
     <br><br>
-    So far, DR3AM STUDI0S has released one game, and there's an exciting project on the horizon: The Experiment — a competitive puzzle-adventure that pushes players to think strategically while testing their reflexes.
+    So far, DR3AM STUDI0S has released one game, and there's an exciting project on the horizon: Bubbles Carnival (a rebrand from the experiment) — a puzzle-adventure that pushes players to think strategically while testing their reflexes.
     <br><br>
     Every game is designed with care, creativity, and a focus on the player experience. By supporting DR3AM STUDI0S through feedback, donations, or simply following the studio's journey, you're helping make these games even better.
   </p>
@@ -1391,7 +1391,7 @@ const imageModal=document.getElementById('imageModal');
 function openImage(src){imageModal.style.display='flex';document.getElementById('modalImg').src=src;}
 imageModal.addEventListener('click',e=>{if(e.target===imageModal)imageModal.style.display='none';});
 const gameData={
-  experiment:{title:'The Experiment (not released yet)',desc:'A zombie survival game set in a mall where you go around trying to escape or find a cure by solving puzzles and finding clues.',link:null},
+  experiment:{title:'Bubbles Carnival (a rebrand from the experiment) (not released yet)',desc:'A zombie survival game set in a mall where you go around trying to escape or find a cure by solving puzzles and finding clues.',link:null},
   firework:{title:'Firework Simulator (beta)',desc:'Try to have the most money and rebirths while launching beautiful fireworks!',link:{href:'https://thedr3amstudi0s-cmyk.github.io/FireworkSimulator/index.html',label:'Click To Play'}},
   habit:{title:'Habit Tracker',desc:'Track your good habits to get a daily streak and make new positive routines.',link:{href:'https://thedr3amstudi0s-cmyk.github.io/Habit-Tracker/',label:'Click To Try'}}
 };
