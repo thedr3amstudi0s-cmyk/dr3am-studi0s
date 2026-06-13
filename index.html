@@ -378,6 +378,7 @@ body.dark .bg-option .bg-name { background:rgba(0,0,0,0.7); }
           <option value="firework">Firework Simulator</option>
           <option value="habit">Habit Tracker</option>
           <option value="experiment">Bubbles Carnival (a rebrand from the experiment) (In development!)</option>
+          <option value="earth">Mark The Earth</option>
         </select>
         <p class="s-status" id="favoriteStatus"></p>
       </div>
@@ -509,7 +510,7 @@ body.dark .bg-option .bg-name { background:rgba(0,0,0,0.7); }
   <div class="games">
     <div class="card" onclick="openGame('experiment')">
       <strong>Bubbles Carnival (a rebrand from the experiment)</strong> <em style="font-size:0.85rem;">(not released yet)</em>
-      <p>A zombie survival game set in a mall where players must escape or find a cure while avoiding threats.</p>
+      <p>A carnival survival game set in a carnival where players must escape or find his friends.</p>
     </div>
     <div class="card" onclick="openGame('firework')">
       <strong>Firework Simulator</strong> <em style="font-size:0.85rem;">(massive update)</em>
@@ -518,6 +519,10 @@ body.dark .bg-option .bg-name { background:rgba(0,0,0,0.7); }
     <div class="card" onclick="openGame('habit')">
       <strong>Habit Tracker</strong>
       <p>Track your good habits to get a daily streak and build new positive routines.</p>
+    </div>
+    <div class="card" onclick="openGame('earth')">
+      <strong>Mark The Earth</strong>
+      <p>An app where you post pictures and it shows where you are at when you post the picture so be careful with where you post it. You can see others post too and you can scroll through them.</p>
     </div>
   </div>
 </section>
@@ -534,6 +539,7 @@ body.dark .bg-option .bg-name { background:rgba(0,0,0,0.7); }
     <div class="gallery-item"><img src="images/game3.png" onclick="openImage(this.src)" alt="Screenshot 3"></div>
     <div class="gallery-item"><img src="images/game4.png" onclick="openImage(this.src)" alt="Screenshot 4"></div>
     <div class="gallery-item"><img src="images/game5.png" onclick="openImage(this.src)" alt="Screenshot 5"></div>
+    <div class="gallery-item"><img src="images/game6.png" onclick="openImage(this.src)" alt="Screenshot 6"></div>
   </div>
 </section>
 
@@ -1393,8 +1399,8 @@ imageModal.addEventListener('click',e=>{if(e.target===imageModal)imageModal.styl
 const gameData={
   experiment:{title:'Bubbles Carnival (a rebrand from the experiment) (not released yet)',desc:'A zombie survival game set in a mall where you go around trying to escape or find a cure by solving puzzles and finding clues.',link:null},
   firework:{title:'Firework Simulator (beta)',desc:'Try to have the most money and rebirths while launching beautiful fireworks!',link:{href:'https://thedr3amstudi0s-cmyk.github.io/FireworkSimulator/index.html',label:'Click To Play'}},
-  habit:{title:'Habit Tracker',desc:'Track your good habits to get a daily streak and make new positive routines.',link:{href:'https://thedr3amstudi0s-cmyk.github.io/Habit-Tracker/',label:'Click To Try'}}
-};
+  habit:{title:'Habit Tracker',desc:'Track your good habits to get a daily streak and make new positive routines.',link:{href:'https://thedr3amstudi0s-cmyk.github.io/Habit-Tracker/',label:'Click To Try'}},
+  earth:{title:'Mark The Earth',desc:'An app where you post pictures and it shows where you are at when you post the picture so be careful with where you post it. You can see others post too and you can scroll through them.};',link:{href:'https://markthearth.com/',label:'Click To Travel Through Photos'}}
 function openGame(id){
   const g=gameData[id];
   document.getElementById('gameModalTitle').textContent=g.title;
