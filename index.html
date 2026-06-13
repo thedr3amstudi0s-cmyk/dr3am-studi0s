@@ -1394,23 +1394,56 @@ startIdeasListener();
 async function confirmSignOut() { closeOverlay('confirmLogout'); await auth.signOut(); }
 
 // ── MODALS ────────────────────────────────────────────────────
-const imageModal=document.getElementById('imageModal');
-function openImage(src){imageModal.style.display='flex';document.getElementById('modalImg').src=src;}
-imageModal.addEventListener('click',e=>{if(e.target===imageModal)imageModal.style.display='none';});
-const gameData={
-  experiment:{title:'Bubbles Carnival (a rebrand from the experiment) (not released yet)',desc:'A zombie survival game set in a mall where you go around trying to escape or find a cure by solving puzzles and finding clues.',link:null},
-  firework:{title:'Firework Simulator (beta)',desc:'Try to have the most money and rebirths while launching beautiful fireworks!',link:{href:'https://thedr3amstudi0s-cmyk.github.io/FireworkSimulator/index.html',label:'Click To Play'}},
-  habit:{title:'Habit Tracker',desc:'Track your good habits to get a daily streak and make new positive routines.',link:{href:'https://thedr3amstudi0s-cmyk.github.io/Habit-Tracker/',label:'Click To Try'}},
-  earth:{title:'Mark The Earth',desc:'An app where you post pictures and it shows where you are at when you post the picture so be careful with where you post it. You can see others post too and you can scroll through them.};',link:{href:'https://markthearth.com/',label:'Click To Travel Through Photos'}}
-function openGame(id){
-  const g=gameData[id];
-  document.getElementById('gameModalTitle').textContent=g.title;
-  document.getElementById('gameModalDesc').textContent=g.desc;
-  document.getElementById('gameModalLink').innerHTML=g.link?`<a href="${g.link.href}" target="_blank" style="color:#4a90e2;text-decoration:underline;">${g.link.label}</a>`:'';
-  document.getElementById('gameModal').style.display='flex';
+const imageModal = document.getElementById('imageModal');
+function openImage(src){
+  imageModal.style.display = 'flex';
+  document.getElementById('modalImg').src = src;
 }
-function closeGame(){document.getElementById('gameModal').style.display='none';}
-document.getElementById('gameModal').addEventListener('click',e=>{if(e.target===document.getElementById('gameModal'))closeGame();});
+imageModal.addEventListener('click', e => {
+  if (e.target === imageModal) imageModal.style.display = 'none';
+});
+
+const gameData = {
+  experiment: {
+    title: 'Bubbles Carnival (a rebrand from the experiment) (not released yet)',
+    desc: 'A zombie survival game set in a mall where you go around trying to escape or find a cure by solving puzzles and finding clues.',
+    link: null
+  },
+  firework: {
+    title: 'Firework Simulator (beta)',
+    desc: 'Try to have the most money and rebirths while launching beautiful fireworks!',
+    link: { href: 'https://thedr3amstudi0s-cmyk.github.io/FireworkSimulator/index.html', label: 'Click To Play' }
+  },
+  habit: {
+    title: 'Habit Tracker',
+    desc: 'Track your good habits to get a daily streak and make new positive routines.',
+    link: { href: 'https://thedr3amstudi0s-cmyk.github.io/Habit-Tracker/', label: 'Click To Try' }
+  },
+  earth: {
+    title: 'Mark The Earth',
+    desc: 'An app where you post pictures and it shows where you are at when you post the picture so be careful with where you post it. You can see others post too and you can scroll through them.',
+    link: { href: 'https://markthearth.com/', label: 'Click To Travel Through Photos' }
+  }
+};
+
+function openGame(id){
+  const g = gameData[id];
+  if (!g) return;
+  document.getElementById('gameModalTitle').textContent = g.title;
+  document.getElementById('gameModalDesc').textContent = g.desc;
+  document.getElementById('gameModalLink').innerHTML = g.link 
+    ? `<a href="${g.link.href}" target="_blank" style="color:#4a90e2;text-decoration:underline;">${g.link.label}</a>` 
+    : '';
+  document.getElementById('gameModal').style.display = 'flex';
+}
+
+function closeGame(){
+  document.getElementById('gameModal').style.display = 'none';
+}
+
+document.getElementById('gameModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('gameModal')) closeGame();
+});
 
 // ── UTILITY ───────────────────────────────────────────────────
 function showStatus(id,msg){
