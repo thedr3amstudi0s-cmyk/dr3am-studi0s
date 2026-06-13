@@ -428,7 +428,7 @@ body.dark .bg-option .bg-name { background:rgba(0,0,0,0.7); }
             <small>Game updates, dev notes & community highlights</small>
           </div>
           <label class="toggle-switch">
-            <input type="checkbox" id="newsletterToggle" onchange="updatePref('newsletter',this.checked)">
+            <input type="checkbox" id="newsletterToggle" onchange="updateReleaseNotifications(this.checked)">
             <span class="t-slider" id="ts-newsletter"></span>
             <span class="t-dot"    id="td-newsletter"></span>
           </label>
@@ -683,7 +683,35 @@ function closeOverlay(id) { document.getElementById(id).classList.remove('show')
 function handleOverlayClick(e,id) { if(e.target===document.getElementById(id)) closeOverlay(id); }
 
 // ── AVATARS ───────────────────────────────────────────────────
-const AVATARS = ['🎮','🕹️','👾','🚀','🧟','🎆','🌙','⚡','🔥','💎','🐉','🎯','😍','🏈','🏀','🏐','🧇','⚾'];
+const AVATARS = [
+'🎮','🕹️','👾','🚀','🧟','🎆','🌙','⚡',
+'🔥','💎','🐉','🎯','😍','🏈','🏀','🏐',
+'🧇','⚾',
+
+// Gaming
+'🎲','🧩','🕶️','👑','💀','🤖','👻',
+'🦖','🐺','🦊','🐲','🦈','🐸',
+
+// Fun
+'🍕','🍔','🍟','🌮','🍩','🍪',
+'🥤','🧋',
+
+// Animals
+'🐶','🐱','🐼','🦁','🐯','🐨',
+'🐵','🦄','🐢','🦉','🐧',
+
+// Cool
+'😎','🤩','🥳','😈','🤠','🧠',
+'💥','🌟','✨','☄️','🌈',
+
+// Sports
+'⚽','🏈','🏀','⚾','🎾','🏒',
+'🥊','🏎️','🏆',
+
+// DR3AM STUDI0S Style
+'🎇','🎆','🌌','🚁','🛸','🔮',
+'💫','🎨','🧨','🧪','🧟‍♂️'
+];
 function buildAvatarGrid() {
   const g = document.getElementById('avatarGrid');
   g.innerHTML = '';
@@ -1031,6 +1059,30 @@ async function updatePref(field, on) {
     showStatus('notifStatus',on?'✓ Subscribed to newsletter!':'Unsubscribed from newsletter.');
   }
   if(field==='notif_releases') showStatus('notifStatus',on?'✓ Release notifications on!':'Release notifications off.');
+}
+async function updateReleaseNotifications(enabled) {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  try {
+    await db.collection('users').doc(user.uid).update({
+      notif_releases: enabled
+    });
+
+    if (enabled) {
+      await db.collection('first_to_know').doc(user.uid).set({
+        email: user.email,
+        uid: user.uid,
+        joinedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    } else {
+      await db.collection('first_to_know').doc(user.uid).delete();
+    }
+
+    showStatus('notifStatus', '✓ Saved!');
+  } catch (err) {
+    console.error(err);
+  }
 }
 async function updateEarlyAccess(on) {
   const user=auth.currentUser; if(!user)return;
