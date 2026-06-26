@@ -1076,14 +1076,16 @@ async function updateReleaseNotifications(enabled) {
   setToggleVisual('ts-notif_releases','td-notif_releases','releasesToggle', enabled);
   try {
     await db.collection('users').doc(user.uid).update({ notif_releases: enabled });
+    const ref = db.collection('first_to_know').doc(user.uid);
     if (enabled) {
-      await db.collection('first_to_know').doc(user.uid).set({
+      await ref.set({
         email: user.email,
         uid: user.uid,
+        displayName: (await db.collection('users').doc(user.uid).get()).data()?.displayName || '',
         joinedAt: firebase.firestore.FieldValue.serverTimestamp()
       });
     } else {
-      await db.collection('first_to_know').doc(user.uid).delete();
+      await ref.delete();
     }
     showStatus('notifStatus', enabled ? "✓ You'll be first to know about new releases!" : 'Removed from release notifications.');
   } catch (err) {
