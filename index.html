@@ -379,7 +379,7 @@ body.dark .bg-option .bg-name { background:rgba(0,0,0,0.7); }
           <option value="habit">Habit Tracker</option>
           <option value="experiment">Bubbles Carnival (a rebrand from the experiment) (In development!)</option>
           <option value="earth">Mark The Earth</option>
-          <option value="rng">❗CRATEVAULT (NEW RELEASE)❗</option>
+          <option value="rng">CRATEVAULT</option>
         </select>
         <p class="s-status" id="favoriteStatus"></p>
       </div>
@@ -430,7 +430,7 @@ body.dark .bg-option .bg-name { background:rgba(0,0,0,0.7); }
             <small>Game updates, dev notes & community highlights</small>
           </div>
           <label class="toggle-switch">
-            <input type="checkbox" id="newsletterToggle" onchange="updateReleaseNotifications(this.checked)">
+            <input type="checkbox" id="newsletterToggle" onchange="updatePref('newsletter',this.checked)">
             <span class="t-slider" id="ts-newsletter"></span>
             <span class="t-dot"    id="td-newsletter"></span>
           </label>
@@ -441,7 +441,7 @@ body.dark .bg-option .bg-name { background:rgba(0,0,0,0.7); }
             <small>Be first to know when a new game drops</small>
           </div>
           <label class="toggle-switch">
-            <input type="checkbox" id="releasesToggle" onchange="updatePref('notif_releases',this.checked)">
+            <input type="checkbox" id="releasesToggle" onchange="updateReleaseNotifications(this.checked)">
             <span class="t-slider" id="ts-notif_releases"></span>
             <span class="t-dot"    id="td-notif_releases"></span>
           </label>
@@ -526,7 +526,7 @@ body.dark .bg-option .bg-name { background:rgba(0,0,0,0.7); }
       <p>An app where you post pictures and it shows where you are at when you post the picture so be careful with where you post it. You can see others post too and you can scroll through them.</p>
     </div>
     <div class="card" onclick="openGame('rng')">
-      <strong>❗CRATEVAULT (NEW RELEASE)❗</strong>
+      <strong>CRATEVAULT</strong>
       <p>A fast paced RNG crate-opening game where players collect rare items, build valuable inventories, trade with others, and compete to become the richest collector.</p>
     </div>
   </div>
@@ -1060,8 +1060,7 @@ async function confirmDeleteAccount() {
 // ── NOTIFICATIONS ─────────────────────────────────────────────
 async function updatePref(field, on) {
   const user=auth.currentUser; if(!user)return;
-  if(field==='newsletter')     setToggleVisual('ts-newsletter','td-newsletter','newsletterToggle',on);
-  if(field==='notif_releases') setToggleVisual('ts-notif_releases','td-notif_releases','releasesToggle',on);
+  if(field==='newsletter') setToggleVisual('ts-newsletter','td-newsletter','newsletterToggle',on);
   const upd={}; upd[field]=on;
   await db.collection('users').doc(user.uid).update(upd).catch(e=>console.error(e));
   if(field==='newsletter'){
@@ -1070,17 +1069,13 @@ async function updatePref(field, on) {
     else   await ref.delete().catch(()=>{});
     showStatus('notifStatus',on?'✓ Subscribed to newsletter!':'Unsubscribed from newsletter.');
   }
-  if(field==='notif_releases') showStatus('notifStatus',on?'✓ Release notifications on!':'Release notifications off.');
 }
 async function updateReleaseNotifications(enabled) {
   const user = auth.currentUser;
   if (!user) return;
-
+  setToggleVisual('ts-notif_releases','td-notif_releases','releasesToggle', enabled);
   try {
-    await db.collection('users').doc(user.uid).update({
-      notif_releases: enabled
-    });
-
+    await db.collection('users').doc(user.uid).update({ notif_releases: enabled });
     if (enabled) {
       await db.collection('first_to_know').doc(user.uid).set({
         email: user.email,
@@ -1090,10 +1085,10 @@ async function updateReleaseNotifications(enabled) {
     } else {
       await db.collection('first_to_know').doc(user.uid).delete();
     }
-
-    showStatus('notifStatus', '✓ Saved!');
+    showStatus('notifStatus', enabled ? "✓ You'll be first to know about new releases!" : 'Removed from release notifications.');
   } catch (err) {
     console.error(err);
+    showStatus('notifStatus', '✗ Error saving. Try again.');
   }
 }
 async function updateEarlyAccess(on) {
@@ -1430,7 +1425,7 @@ const gameData = {
     link: { href: 'https://markthearth.com/', label: 'Click To Travel Through Photos' }
   },
   rng: {
-    title: '❗CRATEVAULT (NEW RELEASE)❗',
+    title: 'CRATEVAULT',
     desc: 'A fast paced RNG crate-opening game where players collect rare items, build valuable inventories, trade with others, and compete to become the richest collector.',
     link: { href: 'https://thedr3amstudi0s-cmyk.github.io/rng-game/', label: 'Click To Play' }
   }
